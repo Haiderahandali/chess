@@ -31,6 +31,8 @@ struct Piece
 };
 
 bool onKeyDown(int);
+bool onKeyUp(int);
+
 bool init();
 
 void loadPieces();
@@ -67,7 +69,7 @@ int main(int argc, char** argv)
         Piece WhiteKnight("Night_W", { 0, 0 });
         drawBoard();
 
-        if (onKeyDown(SPACE))
+        if (onKeyUp(SPACE))
         {
             for (float i = 25; i <= 550; i += 75)
                 for (float j = 25; j <= 550; j += 75)
@@ -254,6 +256,11 @@ void loadPieces()
 bool onKeyDown(int key)
 {
     return keyboardState[key];
+}
+
+bool onKeyUp(int key)
+{
+    return !keyboardState[key];
 }
 
 /*
