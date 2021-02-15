@@ -3,14 +3,39 @@
 #include <iostream>
 #include <map>
 #include <string>
+//------------------------------------------------------ GLOBAL VARIABLE STARTS --------------------------------------------------//
+//------------------------------------------------------ GLOBAL VARIABLE STARTS --------------------------------------------------//
+std::map<char const*, SDL_Texture*> texturesMap;
+int arr[8][8];
+
+const Uint8* keyboardState = SDL_GetKeyboardState(NULL);
+SDL_Texture* gTexture      = NULL;
+SDL_Renderer* gRenderer    = NULL;
+SDL_Window* gWindow        = NULL;
+
+bool quit = false;
 
 const int SCREEN_WIDTH  = 640;
 const int SCREEN_HEIGHT = 640;
 
-//------- Aliasing SDL_SCANCODE -----------//
 #define SPACE SDL_SCANCODE_SPACE
+#define WHITE 1
+#define BLACK 0
+#define Color int
+#define Type int
 
-std::map<char const*, SDL_Texture*> texturesMap;
+enum ChessClass
+{
+    KNIGHT,
+    QUEEN,
+    KING,
+    PAWN,
+    BISHOP,
+    ROOK
+
+};
+//------------------------------------------------------ GLOBAL VARIABLE ENDS --------------------------------------------------//
+//------------------------------------------------------ GLOBAL VARIABLE ENDS --------------------------------------------------//
 
 struct Vector2d
 {
@@ -20,19 +45,27 @@ struct Vector2d
 
 struct Piece
 {
-    Piece(char const* name, Vector2d pos)
+    Piece(char const* name, Vector2d pos, Type type, Color = 1, )
         : name { name }
         , position { pos }
+        ,
+
     {
     }
+    Color color; //white or black
+    Type type; // king, knight, queen, etc.
     char const* name;
     SDL_Texture* tex;
     Vector2d position;
     int m_width  = 60;
     int m_height = 60;
 
-    void snapPosition(int x = 75, int y = 75, int offset = 25);
+    void snapPosition(int const x = 75, int const y = 75, int const offset = 25);
+    Vector2d pieceOffset = Vector2d { this->m_width / 2, this->m_height / 2 };
 };
+Vector2d operator-(Vector2d const&, Vector2d const);
+Vector2d snapPosition(Vector2d vec, int x = 75, int y = 75, int offset = 25);
+Vector2d getMousePosition();
 
 bool onKeyDown(int);
 bool onKeyUp(int);
@@ -46,16 +79,9 @@ void drawPiece(Piece);
 void eventLoop(SDL_Event event);
 void render();
 
-Vector2d getMousePosition();
-
 SDL_Texture* loadTexture(char const*);
 
-const Uint8* keyboardState = SDL_GetKeyboardState(NULL);
-SDL_Texture* gTexture      = NULL;
-SDL_Renderer* gRenderer    = NULL;
-SDL_Window* gWindow        = NULL;
-
-bool quit = false;
+int normalizePosition(Vector2d const&);
 
 int main(int argc, char** argv)
 {
@@ -78,6 +104,7 @@ int main(int argc, char** argv)
         if (onKeyDown(SPACE))
         {
             WhiteKnight.position = getMousePosition();
+            WhiteKnight.position = WhiteKnight.position - WhiteKnight.pieceOffset;
             drawPiece(WhiteKnight);
         }
         else
@@ -289,6 +316,30 @@ void Piece::snapPosition(int x_snap, int y_snap, int offset)
     this->position.y += offset;
 }
 
+Vector2d operator-(Vector2d const& src, Vector2d const other)
+{
+
+    return { src.x - other.x, src.y - other.y };
+}
+
+Vector2d vec snapPosition(Vector2d vec, int const x = 75, int const y = 75, int const offset = 25);
+{
+
+    vec.position.x /= x_snap;
+    vec.position.y /= y_snap;
+
+    vec.position.x *= x_snap;
+    vec.position.x += offset;
+
+    vec.position.y *= y_snap;
+    vec.position.y += offset;
+    return vec;
+}
+
+int normalizePosition(Vector2d const& pos)
+{
+    return pos.x * 8 + y;
+}
 /*
 
 
