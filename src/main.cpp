@@ -1,6 +1,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <iostream>
+#include <map>
+#include <string>
+
+std::map<char const*, SDL_Texture*> texturesMap;
 
 struct vector2d
 {
@@ -8,10 +12,11 @@ struct vector2d
     float y = 0;
 };
 
+void loadPieces();
 bool init();
 void drawBoard();
 void eventLoop(SDL_Event event);
-void loadTexture(char const*);
+SDL_Texture* loadTexture(char const*);
 
 const int SCREEN_WIDTH  = 640;
 const int SCREEN_HEIGHT = 640;
@@ -28,25 +33,33 @@ bool quit = false;
 int main(int argc, char** argv)
 {
     if (init())
+    {
         std::cout << "SDL initialize is done"
                   << "\n"
                   << argc << argv[0];
+        loadPieces();
+    }
 
     SDL_Event event;
 
     while (!quit)
     {
+
         drawBoard();
 
-        for (float i = 25; i <= 600; i += 75)
-            for (float j = 25; j <= 600; j += 75)
+        for (float i = 25; i <= 550; i += 75)
+            for (float j = 25; j <= 550; j += 75)
             {
-                drawPiece("/Users/aliabdulkareem/dev/chess/res/WhiteNight.png", { i, j });
+                drawPiece("Queen_B", { i, j });
             }
         render();
         eventLoop(event);
     }
 
+    IMG_Quit();
+    SDL_Quit();
+
+    printf("\n%s\n", SDL_GetError());
     return 0;
 }
 
@@ -125,7 +138,7 @@ bool init()
 void drawBoard()
 {
     //   SDL_SetRenderDrawColor(gRenderer, 0, 255, 255, 255);
-    loadTexture("/Users/aliabdulkareem/dev/chess/res/ChessBoard.png");
+    gTexture = loadTexture("/Users/aliabdulkareem/dev/chess/res/ChessBoard.png");
 
     SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 }
@@ -134,12 +147,15 @@ void drawPiece(char const* piece, vector2d pos)
 {
 
     SDL_Rect piecePos { static_cast<int>(pos.x), static_cast<int>(pos.y), 60, 60 };
-    loadTexture(piece);
-    SDL_RenderCopy(gRenderer, gTexture, NULL, &piecePos);
+
+    auto pieceTexture = texturesMap[piece];
+    SDL_RenderCopy(gRenderer, pieceTexture, NULL, &piecePos);
 }
 
-void loadTexture(char const* path)
+SDL_Texture* loadTexture(char const* path)
 {
+    SDL_Texture* someTexture;
+
     SDL_Surface* tempSurface = nullptr;
     tempSurface              = IMG_Load(path);
     if (tempSurface == nullptr)
@@ -149,8 +165,8 @@ void loadTexture(char const* path)
     }
     else
     {
-        gTexture = SDL_CreateTextureFromSurface(gRenderer, tempSurface);
-        if (gTexture == nullptr)
+        someTexture = SDL_CreateTextureFromSurface(gRenderer, tempSurface);
+        if (someTexture == nullptr)
         {
             std::cout << "ERROR Creating Texture " << SDL_GetError() << std::endl;
         }
@@ -161,6 +177,8 @@ void loadTexture(char const* path)
             tempSurface = nullptr;
         }
     }
+
+    return someTexture;
 }
 
 void render()
@@ -172,3 +190,115 @@ int clamp(float pos)
 {
     return 1;
 }
+void loadPieces()
+{
+    SDL_Texture* temp = nullptr;
+
+    //------------------------ Black Pieces Loading--------------------------------//
+    temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/BlackBishop.png");
+    texturesMap.insert({ "Bishop_B", temp });
+    temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/BlackQueen.png");
+    texturesMap.insert({ "Queen_B", temp });
+    temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/BlackKing.png");
+    texturesMap.insert({ "King_B", temp });
+    temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/BlackRook.png");
+    texturesMap.insert({ "Rook_B", temp });
+    temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/BlackPawn.png");
+    texturesMap.insert({ "Pawn_B", temp });
+
+    //------------------------ Black Pieces Loading--------------------------------//
+    temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/WhiteBishop.png");
+    texturesMap.insert({ "Bishop_W", temp });
+    temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/WhiteQueen.png");
+    texturesMap.insert({ "Queen_W", temp });
+    temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/WhiteKing.png");
+    texturesMap.insert({ "King_W", temp });
+    temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/WhiteRook.png");
+    texturesMap.insert({ "Rook_W", temp });
+    temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/WhitePawn.png");
+    texturesMap.insert({ "Pawn_W", temp });
+
+    temp = nullptr;
+}
+
+/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
