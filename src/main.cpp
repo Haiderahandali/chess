@@ -42,6 +42,8 @@ void drawPiece(Piece);
 void eventLoop(SDL_Event event);
 void render();
 
+Vector2d getMousePosition();
+
 SDL_Texture* loadTexture(char const*);
 
 const Uint8* keyboardState = SDL_GetKeyboardState(NULL);
@@ -62,21 +64,18 @@ int main(int argc, char** argv)
     }
 
     SDL_Event event;
+    Piece WhiteKnight("Night_W", { 0, 0 });
 
     while (!quit)
     {
 
-        Piece WhiteKnight("Night_W", { 0, 0 });
         drawBoard();
 
-        if (onKeyUp(SPACE))
+        drawPiece(WhiteKnight);
+
+        if (onKeyDown(SPACE))
         {
-            for (float i = 25; i <= 550; i += 75)
-                for (float j = 25; j <= 550; j += 75)
-                {
-                    WhiteKnight.position = { i, j };
-                    drawPiece(WhiteKnight);
-                }
+            WhiteKnight.position = getMousePosition();
         }
 
         render();
@@ -261,6 +260,13 @@ bool onKeyDown(int key)
 bool onKeyUp(int key)
 {
     return !keyboardState[key];
+}
+
+Vector2d getMousePosition()
+{
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    return { static_cast<float>(x), static_cast<float>(y) };
 }
 
 /*
