@@ -14,8 +14,8 @@ std::map<char const*, SDL_Texture*> texturesMap;
 
 struct Vector2d
 {
-    float x = 0;
-    float y = 0;
+    int x = 0;
+    int y = 0;
 };
 
 struct Piece
@@ -28,6 +28,10 @@ struct Piece
     char const* name;
     SDL_Texture* tex;
     Vector2d position;
+    int m_width  = 60;
+    int m_height = 60;
+
+    void snapPosition(int x = 75, int y = 75, int offset = 25);
 };
 
 bool onKeyDown(int);
@@ -71,11 +75,15 @@ int main(int argc, char** argv)
 
         drawBoard();
 
-        drawPiece(WhiteKnight);
-
         if (onKeyDown(SPACE))
         {
             WhiteKnight.position = getMousePosition();
+            drawPiece(WhiteKnight);
+        }
+        else
+        {
+            WhiteKnight.snapPosition();
+            drawPiece(WhiteKnight);
         }
 
         render();
@@ -173,7 +181,7 @@ void drawBoard()
 void drawPiece(Piece p)
 {
 
-    SDL_Rect piecePos { static_cast<int>(p.position.x), static_cast<int>(p.position.y), 60, 60 };
+    SDL_Rect piecePos { p.position.x, p.position.y, p.m_width, p.m_height };
 
     auto pieceTexture = texturesMap[p.name];
     SDL_RenderCopy(gRenderer, pieceTexture, NULL, &piecePos);
@@ -266,7 +274,19 @@ Vector2d getMousePosition()
 {
     int x, y;
     SDL_GetMouseState(&x, &y);
-    return { static_cast<float>(x), static_cast<float>(y) };
+    return { x, y };
+}
+
+void Piece::snapPosition(int x_snap, int y_snap, int offset)
+{
+    this->position.x /= x_snap;
+    this->position.y /= y_snap;
+
+    this->position.x *= x_snap;
+    this->position.x += offset;
+
+    this->position.y *= y_snap;
+    this->position.y += offset;
 }
 
 /*
