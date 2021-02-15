@@ -1,0 +1,69 @@
+{
+	
+	"build_systems":
+	[
+		{
+			"cmd":
+			[
+				"cmake --build build "
+			],
+			"name": "Debug",
+			"selector":
+			[
+				"source.c++",
+				"source.c"
+			],
+			"shell": true,
+			"working_dir": "${project_path}"
+			,
+
+
+			"variants":
+			[
+				{
+					"name": "Run",
+					"shell_cmd":"cmake --build build --config debug && ./bin/debug/Game"
+				}
+			]
+
+
+		},
+		{
+			"cmd":
+			[
+				"cmake --build build --config release && ./bin/release/Game"
+			],
+			"name": "Release",
+			"selector": "source.c++",
+			"shell": true,
+			"working_dir": "${project_path}"
+		},
+		{
+			"cmd":
+			["g++ -std=c++17 src/main.cpp -I /usr/local/include -L /usr/local/lib -l SDL2 -l SDL2main -l SDL2_image -o bin/debug/chess && ./bin/debug/chess"],
+			"name" : "compile",
+			"selector": "source.c++",
+			"shell":true,
+			"working_dir":"${project_path"
+		}
+	],
+	"folders":
+	[
+		{
+			"path": "bin/..",
+			"folder_execlude_patterns":[".cache"],
+			"folder_exclude_patterns": [".svn", ".git", ".hg", "CVS", ".cache", "build", "bin", ".idea", "lib"],
+			"file_exclude_patterns": ["*.sublime-project","compile_commands.json", ".gitignore"]
+		}
+	],
+	"settings":
+	{
+		"LSP":
+		{
+			"clangd":
+			{
+				"enabled": false
+			}
+		}
+	}
+}
