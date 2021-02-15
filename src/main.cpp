@@ -4,6 +4,9 @@
 #include <map>
 #include <string>
 
+const int SCREEN_WIDTH  = 640;
+const int SCREEN_HEIGHT = 640;
+
 //------- Aliasing SDL_SCANCODE -----------//
 #define SPACE SDL_SCANCODE_SPACE
 
@@ -27,23 +30,22 @@ struct Piece
     Vector2d position;
 };
 
-bool onSpaceDown();
+bool onKeyDown(int);
+bool init();
 
 void loadPieces();
-bool init();
 void drawBoard();
+void drawPiece(Piece);
+
 void eventLoop(SDL_Event event);
+void render();
+
 SDL_Texture* loadTexture(char const*);
 
-const int SCREEN_WIDTH  = 640;
-const int SCREEN_HEIGHT = 640;
-
-SDL_Texture* gTexture   = NULL;
-SDL_Renderer* gRenderer = NULL;
-SDL_Window* gWindow     = NULL;
-
-void render();
-void drawPiece(Piece);
+const Uint8* keyboardState = SDL_GetKeyboardState(NULL);
+SDL_Texture* gTexture      = NULL;
+SDL_Renderer* gRenderer    = NULL;
+SDL_Window* gWindow        = NULL;
 
 bool quit = false;
 
@@ -65,12 +67,16 @@ int main(int argc, char** argv)
         Piece WhiteKnight("Night_W", { 0, 0 });
         drawBoard();
 
-        for (float i = 25; i <= 550; i += 75)
-            for (float j = 25; j <= 550; j += 75)
-            {
-                WhiteKnight.position = { i, j };
-                drawPiece(WhiteKnight);
-            }
+        if (onKeyDown(SPACE))
+        {
+            for (float i = 25; i <= 550; i += 75)
+                for (float j = 25; j <= 550; j += 75)
+                {
+                    WhiteKnight.position = { i, j };
+                    drawPiece(WhiteKnight);
+                }
+        }
+
         render();
         eventLoop(event);
     }
@@ -84,6 +90,7 @@ int main(int argc, char** argv)
 
 void eventLoop(SDL_Event e)
 {
+
     while (SDL_PollEvent(&e))
     {
         switch (e.type)
@@ -244,9 +251,11 @@ void loadPieces()
     temp = nullptr;
 }
 
-bool onSpaceDown()
+bool onKeyDown(int key)
 {
+    return keyboardState[key];
 }
+
 /*
 
 
