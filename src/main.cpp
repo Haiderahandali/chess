@@ -4,13 +4,30 @@
 #include <map>
 #include <string>
 
+//------- Aliasing SDL_SCANCODE -----------//
+#define SPACE SDL_SCANCODE_SPACE
+
 std::map<char const*, SDL_Texture*> texturesMap;
 
-struct vector2d
+struct Vector2d
 {
     float x = 0;
     float y = 0;
 };
+
+struct Piece
+{
+    Piece(char const* name, Vector2d pos)
+        : name { name }
+        , position { pos }
+    {
+    }
+    char const* name;
+    SDL_Texture* tex;
+    Vector2d position;
+};
+
+bool onSpaceDown();
 
 void loadPieces();
 bool init();
@@ -26,7 +43,7 @@ SDL_Renderer* gRenderer = NULL;
 SDL_Window* gWindow     = NULL;
 
 void render();
-void drawPiece(char const*, vector2d pos);
+void drawPiece(Piece);
 
 bool quit = false;
 
@@ -45,12 +62,14 @@ int main(int argc, char** argv)
     while (!quit)
     {
 
+        Piece WhiteKnight("Night_W", { 0, 0 });
         drawBoard();
 
         for (float i = 25; i <= 550; i += 75)
             for (float j = 25; j <= 550; j += 75)
             {
-                drawPiece("Queen_B", { i, j });
+                WhiteKnight.position = { i, j };
+                drawPiece(WhiteKnight);
             }
         render();
         eventLoop(event);
@@ -143,12 +162,12 @@ void drawBoard()
     SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 }
 
-void drawPiece(char const* piece, vector2d pos)
+void drawPiece(Piece p)
 {
 
-    SDL_Rect piecePos { static_cast<int>(pos.x), static_cast<int>(pos.y), 60, 60 };
+    SDL_Rect piecePos { static_cast<int>(p.position.x), static_cast<int>(p.position.y), 60, 60 };
 
-    auto pieceTexture = texturesMap[piece];
+    auto pieceTexture = texturesMap[p.name];
     SDL_RenderCopy(gRenderer, pieceTexture, NULL, &piecePos);
 }
 
@@ -194,9 +213,11 @@ void loadPieces()
 {
     SDL_Texture* temp = nullptr;
 
-    //------------------------ Black Pieces Loading--------------------------------//
+    //------------------------ Black  Loading--------------------------------//
     temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/BlackBishop.png");
     texturesMap.insert({ "Bishop_B", temp });
+    temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/BlackNight.png");
+    texturesMap.insert({ "Night_B", temp });
     temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/BlackQueen.png");
     texturesMap.insert({ "Queen_B", temp });
     temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/BlackKing.png");
@@ -206,9 +227,11 @@ void loadPieces()
     temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/BlackPawn.png");
     texturesMap.insert({ "Pawn_B", temp });
 
-    //------------------------ Black Pieces Loading--------------------------------//
+    //------------------------ White  Loading--------------------------------//
     temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/WhiteBishop.png");
     texturesMap.insert({ "Bishop_W", temp });
+    temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/WhiteNight.png");
+    texturesMap.insert({ "Night_W", temp });
     temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/WhiteQueen.png");
     texturesMap.insert({ "Queen_W", temp });
     temp = loadTexture("/Users/aliabdulkareem/dev/chess/res/WhiteKing.png");
@@ -221,6 +244,9 @@ void loadPieces()
     temp = nullptr;
 }
 
+bool onSpaceDown()
+{
+}
 /*
 
 
