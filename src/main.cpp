@@ -45,10 +45,11 @@ struct Vector2d
 
 struct Piece
 {
-    Piece(char const* name, Vector2d pos, Type type, Color = 1, )
+    Piece(char const* name, Vector2d pos, Type type, Color color = 1)
         : name { name }
         , position { pos }
-        ,
+        , type { type }
+        , color { color }
 
     {
     }
@@ -94,7 +95,7 @@ int main(int argc, char** argv)
     }
 
     SDL_Event event;
-    Piece WhiteKnight("Night_W", { 0, 0 });
+    Piece WhiteKnight("Night_W", { 0, 0 }, KNIGHT);
 
     while (!quit)
     {
@@ -106,11 +107,13 @@ int main(int argc, char** argv)
             WhiteKnight.position = getMousePosition();
             WhiteKnight.position = WhiteKnight.position - WhiteKnight.pieceOffset;
             drawPiece(WhiteKnight);
+            ;
         }
         else
         {
             WhiteKnight.snapPosition();
             drawPiece(WhiteKnight);
+            printf("%d\n", normalizePosition(WhiteKnight.position));
         }
 
         render();
@@ -322,23 +325,23 @@ Vector2d operator-(Vector2d const& src, Vector2d const other)
     return { src.x - other.x, src.y - other.y };
 }
 
-Vector2d vec snapPosition(Vector2d vec, int const x = 75, int const y = 75, int const offset = 25);
+Vector2d snapPosition(Vector2d vec, int const x_snap, int const y_snap, int const offset)
 {
 
-    vec.position.x /= x_snap;
-    vec.position.y /= y_snap;
+    vec.x /= x_snap;
+    vec.y /= y_snap;
 
-    vec.position.x *= x_snap;
-    vec.position.x += offset;
+    vec.x *= x_snap;
+    vec.x += offset;
 
-    vec.position.y *= y_snap;
-    vec.position.y += offset;
+    vec.y *= y_snap;
+    vec.y += offset;
     return vec;
 }
 
 int normalizePosition(Vector2d const& pos)
 {
-    return pos.x * 8 + y;
+    return pos.x * 8 + pos.y;
 }
 /*
 
