@@ -65,6 +65,8 @@ struct Piece
     Vector2d pieceOffset = Vector2d { this->m_width / 2, this->m_height / 2 };
 };
 Vector2d operator-(Vector2d const&, Vector2d const);
+Vector2d operator-(Vector2d const&, int const);
+Vector2d operator/(Vector2d const&, int const);
 Vector2d snapPosition(Vector2d vec, int x = 75, int y = 75, int offset = 25);
 Vector2d getMousePosition();
 
@@ -95,7 +97,7 @@ int main(int argc, char** argv)
     }
 
     SDL_Event event;
-    Piece WhiteKnight("Night_W", { 0, 0 }, KNIGHT);
+    Piece WhiteKnight("Night_W", { 100, 100 }, KNIGHT);
 
     while (!quit)
     {
@@ -111,9 +113,11 @@ int main(int argc, char** argv)
         }
         else
         {
+            // printf(" Piece position is at [ %d , %d ]\n", WhiteKnight.position.x, WhiteKnight.position.y);
             WhiteKnight.snapPosition();
+            // printf(" position was snapped to [ %d , %d] \n", WhiteKnight.position.x, WhiteKnight.position.y);
             drawPiece(WhiteKnight);
-            printf("%d\n", normalizePosition(WhiteKnight.position));
+            printf("%d\n", normalizePosition((WhiteKnight.position - 25) / 75));
         }
 
         render();
@@ -319,10 +323,18 @@ void Piece::snapPosition(int x_snap, int y_snap, int offset)
     this->position.y += offset;
 }
 
+Vector2d operator-(Vector2d const& vec, int const other)
+{
+    return { vec.x - other, vec.y - other };
+}
 Vector2d operator-(Vector2d const& src, Vector2d const other)
 {
 
     return { src.x - other.x, src.y - other.y };
+}
+Vector2d operator/(Vector2d const& vec, int const other)
+{
+    return { vec.x / other, vec.y / other };
 }
 
 Vector2d snapPosition(Vector2d vec, int const x_snap, int const y_snap, int const offset)

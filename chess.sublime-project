@@ -40,7 +40,7 @@
 		},
 		{
 			"cmd":
-			["g++ -std=c++17 src/main.cpp -I /usr/local/include -L /usr/local/lib -l SDL2 -l SDL2main -l SDL2_image -o bin/debug/chess && ./bin/debug/chess"],
+			["g++ -std=c++17 src/main.cpp -g -I /usr/local/include -L /usr/local/lib -l SDL2 -l SDL2main -l SDL2_image -o bin/debug/chess && ./bin/debug/chess"],
 			"name" : "compile",
 			"selector": "source.c++",
 			"shell":true,
