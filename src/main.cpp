@@ -393,9 +393,7 @@ int abs(int num)
 
 bool isLegalPosition(Piece p, Vector2d const& pos)
 {
-
-    printf(" Mouse Position = [%d , %d] ", pos.x, pos.y);
-    printf("Piece Position [%d , %d] \n", p.position.x, p.position.y);
+    bool legal = false;
 
     int x = (p.position.x - pos.x) / 75;
     int y = (p.position.y - pos.y) / 75;
@@ -403,18 +401,34 @@ bool isLegalPosition(Piece p, Vector2d const& pos)
     y = abs(y);
     x = abs(x);
 
-    printf("The difference  is [ %d, %d] \n", x, y);
-
-    bool legal = false;
     switch (p.type)
     {
     case KNIGHT:
 
         if ((y == 2 && x == 1) || (y == 1 && x == 2))
             legal = true;
-        else
-            legal = false;
         break;
+
+    case ROOK:
+        if (y == 0 || x == 0)
+            legal = true;
+        break;
+
+    case BISHOP:
+        if (y == x)
+            legal = true;
+        break;
+
+    case QUEEN:
+        if (x == y || x == 0 || y == 0)
+            legal = true;
+        break;
+
+    case KING:
+        if (y <= 1 && x <= 1)
+            legal = true;
+        break;
+
     default:
         break;
     }
