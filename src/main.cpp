@@ -103,8 +103,8 @@ int main(int argc, char** argv)
     }
 
     SDL_Event event;
-    Piece WhiteKnight("Night_W", { 0, 0 }, KNIGHT);
-    auto oldPosition = WhiteKnight.position;
+    Piece WhiteQueen("Queen_W", { 0, 0 }, QUEEN);
+    auto oldPosition = WhiteQueen.position;
     while (!quit)
     {
 
@@ -113,24 +113,24 @@ int main(int argc, char** argv)
         if (onKeyDown(SPACE))
         {
 
-            WhiteKnight.position = getMousePosition() - WhiteKnight.pieceOffset;
-            drawPiece(WhiteKnight, 0); // no offset, draw at mouse position
+            WhiteQueen.position = getMousePosition() - WhiteQueen.pieceOffset;
+            drawPiece(WhiteQueen, 0); // no offset, draw at mouse position
         }
         else
         {
             Vector2d mouse = snapPosition(getMousePosition(), 75, 75, -SCREEN_OFFSET);
-            if (isLegalPosition(WhiteKnight, mouse))
+            if (isLegalPosition(WhiteQueen, mouse))
             {
-                WhiteKnight.position = mouse;
+                WhiteQueen.position = mouse;
 
-                oldPosition = WhiteKnight.position;
-                drawPiece(WhiteKnight);
+                oldPosition = WhiteQueen.position;
+                drawPiece(WhiteQueen);
             }
 
             else
             {
-                WhiteKnight.position = oldPosition;
-                drawPiece(WhiteKnight);
+                WhiteQueen.position = oldPosition;
+                drawPiece(WhiteQueen);
             }
         }
 
