@@ -16,6 +16,7 @@ bool quit = false;
 
 const int SCREEN_WIDTH  = 640;
 const int SCREEN_HEIGHT = 640;
+const int SCREEN_OFFSET = 25;
 
 #define SPACE SDL_SCANCODE_SPACE
 #define WHITE 1
@@ -112,12 +113,12 @@ int main(int argc, char** argv)
         if (onKeyDown(SPACE))
         {
 
-            WhiteKnight.position = getMousePosition();
-            drawPiece(WhiteKnight);
+            WhiteKnight.position = getMousePosition() - WhiteKnight.pieceOffset;
+            drawPiece(WhiteKnight, 0); // no offset, draw at mouse position
         }
         else
         {
-            Vector2d mouse = snapPosition(getMousePosition(), 75, 75, -25);
+            Vector2d mouse = snapPosition(getMousePosition(), 75, 75, -SCREEN_OFFSET);
             if (isLegalPosition(WhiteKnight, mouse))
             {
                 WhiteKnight.position = mouse;
