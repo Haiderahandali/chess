@@ -6,7 +6,6 @@
 //------------------------------------------------------ GLOBAL VARIABLE STARTS --------------------------------------------------//
 //------------------------------------------------------ GLOBAL VARIABLE STARTS --------------------------------------------------//
 std::map<char const*, SDL_Texture*> texturesMap;
-int arr[8][8];
 
 const Uint8* keyboardState = SDL_GetKeyboardState(NULL);
 SDL_Texture* gTexture      = NULL;
@@ -61,23 +60,28 @@ struct Piece
     int m_width  = 60;
     int m_height = 60;
 
-    void snapPosition(int const x = 75, int const y = 75, int const offset = 25);
+    void snapPosition(int const x = 75, int const y = 75, int const offset = 0);
     Vector2d pieceOffset = Vector2d { this->m_width / 2, this->m_height / 2 };
 };
 Vector2d operator-(Vector2d const&, Vector2d const);
+Vector2d operator+(Vector2d const&, Vector2d const);
+
+Vector2d operator+(Vector2d const&, int const);
+
 Vector2d operator-(Vector2d const&, int const);
 Vector2d operator/(Vector2d const&, int const);
-Vector2d snapPosition(Vector2d vec, int x = 75, int y = 75, int offset = 25);
+Vector2d snapPosition(Vector2d vec, int x = 75, int y = 75, int offset = 0);
 Vector2d getMousePosition();
 
 bool onKeyDown(int);
 bool onKeyUp(int);
 
 bool init();
+bool isLegalPosition(Piece p, Vector2d const& pos);
 
 void loadPieces();
 void drawBoard();
-void drawPiece(Piece);
+void drawPiece(Piece, int offset = 25);
 
 void eventLoop(SDL_Event event);
 void render();
@@ -85,6 +89,7 @@ void render();
 SDL_Texture* loadTexture(char const*);
 
 int normalizePosition(Vector2d const&);
+int abs(int);
 
 int main(int argc, char** argv)
 {
@@ -97,8 +102,8 @@ int main(int argc, char** argv)
     }
 
     SDL_Event event;
-    Piece WhiteKnight("Night_W", { 100, 100 }, KNIGHT);
-
+    Piece WhiteKnight("Night_W", { 0, 0 }, KNIGHT);
+    auto oldPosition = WhiteKnight.position;
     while (!quit)
     {
 
@@ -106,18 +111,26 @@ int main(int argc, char** argv)
 
         if (onKeyDown(SPACE))
         {
+
             WhiteKnight.position = getMousePosition();
-            WhiteKnight.position = WhiteKnight.position - WhiteKnight.pieceOffset;
             drawPiece(WhiteKnight);
-            ;
         }
         else
         {
-            // printf(" Piece position is at [ %d , %d ]\n", WhiteKnight.position.x, WhiteKnight.position.y);
-            WhiteKnight.snapPosition();
-            // printf(" position was snapped to [ %d , %d] \n", WhiteKnight.position.x, WhiteKnight.position.y);
-            drawPiece(WhiteKnight);
-            printf("%d\n", normalizePosition((WhiteKnight.position - 25) / 75));
+            Vector2d mouse = snapPosition(getMousePosition(), 75, 75, -25);
+            if (isLegalPosition(WhiteKnight, mouse))
+            {
+                WhiteKnight.position = mouse;
+
+                oldPosition = WhiteKnight.position;
+                drawPiece(WhiteKnight);
+            }
+
+            else
+            {
+                WhiteKnight.position = oldPosition;
+                drawPiece(WhiteKnight);
+            }
         }
 
         render();
@@ -212,10 +225,11 @@ void drawBoard()
     SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 }
 
-void drawPiece(Piece p)
+void drawPiece(Piece p, int offset)
 {
 
-    SDL_Rect piecePos { p.position.x, p.position.y, p.m_width, p.m_height };
+    SDL_Rect piecePos { p.position.x + offset, p.position.y + offset, p.m_width, p.m_height };
+    //off setting the screen width and height;
 
     auto pieceTexture = texturesMap[p.name];
     SDL_RenderCopy(gRenderer, pieceTexture, NULL, &piecePos);
@@ -332,6 +346,18 @@ Vector2d operator-(Vector2d const& src, Vector2d const other)
 
     return { src.x - other.x, src.y - other.y };
 }
+
+Vector2d operator+(Vector2d const& src, Vector2d const other)
+{
+
+    return { src.x + other.x, src.y + other.y };
+}
+
+Vector2d operator+(Vector2d const& src, int const other)
+{
+
+    return { src.x + other, src.y + other };
+}
 Vector2d operator/(Vector2d const& vec, int const other)
 {
     return { vec.x / other, vec.y / other };
@@ -340,14 +366,15 @@ Vector2d operator/(Vector2d const& vec, int const other)
 Vector2d snapPosition(Vector2d vec, int const x_snap, int const y_snap, int const offset)
 {
 
+    vec.y += offset;
+    vec.x += offset;
+
     vec.x /= x_snap;
     vec.y /= y_snap;
 
     vec.x *= x_snap;
-    vec.x += offset;
-
     vec.y *= y_snap;
-    vec.y += offset;
+
     return vec;
 }
 
@@ -355,7 +382,49 @@ int normalizePosition(Vector2d const& pos)
 {
     return pos.x * 8 + pos.y;
 }
+int abs(int num)
+{
+    if (num > -1)
+        return num;
+    else
+        return (num * -1);
+}
+
+bool isLegalPosition(Piece p, Vector2d const& pos)
+{
+
+    printf(" Mouse Position = [%d , %d] ", pos.x, pos.y);
+    printf("Piece Position [%d , %d] \n", p.position.x, p.position.y);
+
+    int x = (p.position.x - pos.x) / 75;
+    int y = (p.position.y - pos.y) / 75;
+
+    y = abs(y);
+    x = abs(x);
+
+    printf("The difference  is [ %d, %d] \n", x, y);
+
+    bool legal = false;
+    switch (p.type)
+    {
+    case KNIGHT:
+
+        if ((y == 2 && x == 1) || (y == 1 && x == 2))
+            legal = true;
+        else
+            legal = false;
+        break;
+    default:
+        break;
+    }
+    return legal;
+}
+
 /*
+
+
+
+
 
 
 
