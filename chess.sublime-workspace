@@ -4,8 +4,160 @@
 		"selected_items":
 		[
 			[
+				"mouse",
+				"mousePos"
+			],
+			[
+				"mo",
+				"mousePos"
+			],
+			[
+				"SCREE",
+				"SCREEN_OFFSET"
+			],
+			[
+				"tem",
+				"temp_position"
+			],
+			[
+				"is",
+				"isSelect"
+			],
+			[
+				"white",
+				"WhiteQueen"
+			],
+			[
+				"p",
+				"printf\tprintf …"
+			],
+			[
+				"pos",
+				"position"
+			],
+			[
+				"White",
+				"WhiteQueen"
+			],
+			[
+				"Quee",
+				"Queen_W"
+			],
+			[
+				"King",
+				"King_W"
+			],
+			[
+				"Rook",
+				"Rook_W"
+			],
+			[
+				"Bl",
+				"BlackBishop"
+			],
+			[
+				"SCreen",
+				"SCREEN_OFFSET"
+			],
+			[
 				"SCREEN",
-				"SCREEN_HEIGHT"
+				"SCREEN_OFFSET"
+			],
+			[
+				"off",
+				"offset"
+			],
+			[
+				"m",
+				"mouse"
+			],
+			[
+				"get",
+				"getMousePosition"
+			],
+			[
+				"vec",
+				"Vector2d"
+			],
+			[
+				"m_",
+				"m_height"
+			],
+			[
+				"snap",
+				"snapPosition"
+			],
+			[
+				"po",
+				"position"
+			],
+			[
+				"on",
+				"onKeyDown"
+			],
+			[
+				"Night",
+				"Night_W"
+			],
+			[
+				"tex",
+				"texturesMap"
+			],
+			[
+				"laod",
+				"loadTexture"
+			],
+			[
+				"load",
+				"loadPieces"
+			],
+			[
+				"peice",
+				"pieceTexture"
+			],
+			[
+				"piece",
+				"piece"
+			],
+			[
+				"texutre",
+				"texturesMap"
+			],
+			[
+				"ve",
+				"vector2d"
+			],
+			[
+				"piec",
+				"piece"
+			],
+			[
+				"draw",
+				"drawPiece"
+			],
+			[
+				"SCRE",
+				"SCREEN_WIDTH"
+			],
+			[
+				"SC",
+				"SCREEN_WIDTH"
+			],
+			[
+				"g",
+				"gTexture"
+			],
+			[
+				"SDL_Render",
+				"SDL_RenderCopy"
+			],
+			[
+				"SDL_Set",
+				"SDL_SetRenderDrawColor"
+			],
+			[
+				"even",
+				"eventLoop"
 			],
 			[
 				"target_link",
@@ -18,14 +170,6 @@
 			[
 				"include",
 				"include_directories\tbuiltin"
-			],
-			[
-				"m_",
-				"m_Actors"
-			],
-			[
-				"is",
-				"isUpdatingActor"
 			],
 			[
 				"de",
@@ -68,10 +212,6 @@
 				"m_ballVelocity"
 			],
 			[
-				"SCREE",
-				"SCREEN_WIDTH"
-			],
-			[
 				"sta",
 				"static_cast"
 			],
@@ -82,10 +222,6 @@
 			[
 				"delta",
 				"m_deltaTime"
-			],
-			[
-				"SCRE",
-				"SCREEN_HEIGHT"
 			],
 			[
 				"a",
@@ -100,16 +236,8 @@
 				"inc\t#include <…>"
 			],
 			[
-				"m",
-				"main\tmain()"
-			],
-			[
 				"str",
 				"string\tstandard header"
-			],
-			[
-				"g",
-				"gRenderer"
 			],
 			[
 				"Gl",
@@ -124,20 +252,12 @@
 				"Vector2D"
 			],
 			[
-				"get",
-				"getY"
-			],
-			[
 				"S",
 				"SCREEN_WIDTH"
 			],
 			[
 				"e1",
 				"e1_d"
-			],
-			[
-				"SC",
-				"SCREEN_HEGIHT"
 			],
 			[
 				"entit",
@@ -162,10 +282,6 @@
 			[
 				"y",
 				"yPosition"
-			],
-			[
-				"tex",
-				"texture"
 			],
 			[
 				"SDL_",
@@ -260,16 +376,8 @@
 				"GameStateMachine\t  Class"
 			],
 			[
-				"mouse",
-				"MOUSE_ON\t  button_state"
-			],
-			[
 				"fram",
 				"frameHeight\t  int"
-			],
-			[
-				"mo",
-				"mousePosition\t  Vector2d"
 			],
 			[
 				"veco",
@@ -304,10 +412,6 @@
 				"GameStates.hpp\"\t  File"
 			],
 			[
-				"on",
-				"onExit()\t  void"
-			],
-			[
 				"pri",
 				"private:\t  Snippet"
 			],
@@ -330,10 +434,6 @@
 			[
 				"ge",
 				"getX() const\t  float"
-			],
-			[
-				"vec",
-				"vec\t  Vector2d"
 			],
 			[
 				"vector",
@@ -404,130 +504,74 @@
 				"m_enemy\t  Enemy *"
 			],
 			[
-				"p",
-				"push_back(…)\t  [2 overloads]"
-			],
-			[
 				"m_c",
 				"m_currentFrame\t  int"
-			],
-			[
-				"draw",
-				"draw(std::string textureID, SDL_Rect pos, SDL_Renderer *g_Renderer, SDL_RendererFlip flip = SDL_FLIP_NONE)\t  void"
 			],
 			[
 				"SDL_re",
 				"SDL_Rect\t  Struct"
 			],
 			[
-				"SDL_Render",
-				"SDL_Renderer\t  Struct"
-			],
-			[
 				"defin",
 				"define macro\t  Snippet"
-			],
-			[
-				"update",
-				"updateFrameNumber(const int &framesSpeed, const int &framesCount)\t  int"
-			],
-			[
-				"upda",
-				"updateFrameNumber(const int &frameWdith, const int &framesSpeed, const int &framesCount)\t  int"
-			],
-			[
-				"m_fra",
-				"m_frameWidth\t  const int"
-			],
-			[
-				"upd",
-				"updateFrameNumber(const int &frameWdith, const int &framesSpeed, const int &framesCount)\t  int"
-			],
-			[
-				"frames",
-				"framesSpeed\t  int"
-			],
-			[
-				"SDL_Flip",
-				"SDL_FLIP_NONE\t  SDL_RendererFlip"
-			],
-			[
-				"SDL_flip",
-				"SDL_FLIP_NONE\t  SDL_RendererFlip"
-			],
-			[
-				"SDL_renderCopy",
-				"SDL_RenderCopyEx(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle, const SDL_Point *center, const SDL_RendererFlip flip)\t  int"
-			],
-			[
-				"curre",
-				"currentRow\t  int"
-			],
-			[
-				"dra",
-				"drawFrame(std::string textureID, SDL_Rect pos, int currentRow, int currentFrame, SDL_Renderer g_Renderer, SDL_RendererFlip flip)\t  void"
-			],
-			[
-				"SDL_redne",
-				"SDL_RendererFlip\t  Interface"
-			],
-			[
-				"SDL_RenderCopy",
-				"SDL_RenderCopyEx(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_Rect *srcrect, const SDL_Rect *dstrect, const double angle, const SDL_Point *center, const SDL_RendererFlip flip)\t  int"
-			],
-			[
-				"SDL_Re",
-				"SDL_Rect\t  Struct"
-			],
-			[
-				"SDL_RendererFL",
-				"SDL_RendererFlip\t  Interface"
-			],
-			[
-				"map",
-				"map>\t  File"
-			],
-			[
-				"SDL_FLIP",
-				"SDL_FLIP_NONE\t  SDL_RendererFlip"
-			],
-			[
-				"mframe",
-				"m_frameLocationX\t  int"
-			],
-			[
-				"m_fram",
-				"m_frameLocationX\t  int"
-			],
-			[
-				"SDL_quer",
-				"SDL_QueryTexture(SDL_Texture *texture, Uint32 *format, int *access, int *w, int *h)\t  int"
-			],
-			[
-				"SDL_key",
-				"SDL_Keysym\t  Interface"
-			],
-			[
-				"cl",
-				"clean()\t  void"
-			],
-			[
-				"g_",
-				"g_Renderer\t  SDL_Renderer *"
 			]
 		]
 	},
-	"build_system": "",
+	"build_system": "compile",
 	"build_system_choices":
 	[
+		[
+			[
+				[
+					"Debug",
+					""
+				],
+				[
+					"Debug",
+					"Run"
+				],
+				[
+					"Release",
+					""
+				],
+				[
+					"compile",
+					""
+				],
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					""
+				],
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"compile",
+				""
+			]
+		]
 	],
-	"build_varint": "",
+	"build_varint": "Run",
 	"command_palette":
 	{
 		"height": 0.0,
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"preference",
+				"Preferences: Settings"
+			],
+			[
+				"install pack",
+				"Package Control: Install Package"
+			],
+			[
+				"package",
+				"Package Control: Remove Package"
+			],
 			[
 				"build",
 				"Build With: Debug"
@@ -703,10 +747,6 @@
 			[
 				"LSP",
 				"LSP: Enable Language Server Globally"
-			],
-			[
-				"package",
-				"Install Package Control"
 			]
 		],
 		"width": 0.0
@@ -729,6 +769,11 @@
 	},
 	"file_history":
 	[
+		"/Users/aliabdulkareem/dev/chess/include/headers.hpp",
+		"/Users/aliabdulkareem/dev/chess/CMakeLists.txt",
+		"/Users/aliabdulkareem/dev/chess/src/main.cpp",
+		"/Users/aliabdulkareem/dev/chess/chess.sublime-project",
+		"/Users/aliabdulkareem/dev/chess/src/nor.py",
 		"/Users/aliabdulkareem/dev/HandmadeHero/CMakeLists.txt",
 		"/Users/aliabdulkareem/dev/HandmadeHero/Book.sublime-project",
 		"/Users/aliabdulkareem/dev/Engine/src/Core/Core.cpp",
@@ -831,7 +876,7 @@
 	],
 	"find":
 	{
-		"height": 40.0
+		"height": 24.0
 	},
 	"find_in_files":
 	{
@@ -845,6 +890,43 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"75",
+			"isSelect",
+			"isLegalPos",
+			"atSame",
+			"mousePos",
+			"comparePosition",
+			"BlackKing",
+			"BlackRook",
+			"WhiteBishop",
+			"WhiteKnight",
+			"else\n            legal = false;",
+			"getmouseposition()",
+			"mouse",
+			"snapPosition",
+			"30",
+			"25",
+			"-",
+			"Diff",
+			".position",
+			"= 75",
+			"this->",
+			"WhiteKnight",
+			"x",
+			"p.",
+			"sanp",
+			"x",
+			"snap",
+			"keyboard",
+			"Piece",
+			"piece",
+			"Piece",
+			"piece",
+			"QUIT",
+			"loadTkexture",
+			"_B",
+			"Black",
+			"gTexture"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -892,7 +974,11 @@
 	"menu_visible": true,
 	"output.Terminus":
 	{
-		"height": 109.0
+		"height": 167.0
+	},
+	"output.exec":
+	{
+		"height": 206.0
 	},
 	"output.find_results":
 	{
@@ -910,6 +996,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"main",
+				"src/main.cpp"
+			],
 			[
 				"gmae.cp",
 				"src/Engine/Game.cpp"
@@ -929,10 +1019,6 @@
 			[
 				"game.c",
 				"src/Engine/Game.cpp"
-			],
-			[
-				"main",
-				"src/Game/main.cpp"
 			],
 			[
 				"mai",
@@ -1450,7 +1536,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 229.0,
+	"side_bar_width": 242.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
