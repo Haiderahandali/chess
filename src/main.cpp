@@ -119,12 +119,19 @@ int main(int argc, char** argv)
 
         if (onKeyDown(SPACE))
         {
+            if (selectedSquare(getMousePosition()) == WhiteQueen.currentSqaure)
+            {
 
-            WhiteQueen.position = getMousePosition() - WhiteQueen.pieceOffset;
+                WhiteQueen.selected = true;
+            }
+            auto tempPosition   = WhiteQueen.position;
+            WhiteQueen.position = getMousePosition() - SCREEN_OFFSET;
             drawPiece(WhiteQueen, 0); // no offset, draw at mouse position
+            WhiteQueen.position = tempPosition;
         }
         else
         {
+
             printf("mouse hover at %d\n", selectedSquare(getMousePosition()));
             Vector2d mouse = snapPosition(getMousePosition(), SQUARE_WIDTH, SQUARE_WIDTH, -SCREEN_OFFSET);
             if (isLegalPosition(WhiteQueen, mouse) && WhiteQueen.selected)
@@ -134,12 +141,14 @@ int main(int argc, char** argv)
 
                 oldPosition = WhiteQueen.position;
                 drawPiece(WhiteQueen);
+                WhiteQueen.selected = false;
             }
 
             else
             {
                 WhiteQueen.position = oldPosition;
                 drawPiece(WhiteQueen);
+                WhiteQueen.selected = false;
             }
         }
 
@@ -337,14 +346,15 @@ Vector2d getMousePosition()
 
 void Piece::snapPosition(int x_snap, int y_snap, int offset)
 {
+    this->position.x += offset;
+    this->position.y += offset;
+
     this->position.x /= x_snap;
     this->position.y /= y_snap;
 
     this->position.x *= x_snap;
-    this->position.x += offset;
 
     this->position.y *= y_snap;
-    this->position.y += offset;
 }
 
 Vector2d operator-(Vector2d const& vec, int const other)
