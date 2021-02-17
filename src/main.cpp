@@ -2,7 +2,9 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <string>
+#include <vector>
 //------------------------------------------------------ GLOBAL VARIABLE STARTS --------------------------------------------------//
 //------------------------------------------------------ GLOBAL VARIABLE STARTS --------------------------------------------------//
 std::map<char const*, SDL_Texture*> texturesMap;
@@ -25,7 +27,7 @@ const int SQUARE_WIDTH  = 75;
 #define Color int
 #define Type int
 
-enum ChessClass
+enum PIECE_TYPE
 {
     KNIGHT,
     QUEEN,
@@ -47,10 +49,10 @@ struct Vector2d
 struct Piece
 {
     Piece(char const* name, Vector2d pos, Type type, Color color = 1)
-        : name { name }
-        , position { pos }
+        : color { color }
         , type { type }
-        , color { color }
+        , name { name }
+        , position { pos }
 
     {
     }
@@ -75,6 +77,7 @@ Vector2d operator+(Vector2d const&, int const);
 
 Vector2d operator-(Vector2d const&, int const);
 Vector2d operator/(Vector2d const&, int const);
+Vector2d operator*(Vector2d const&, int const);
 Vector2d snapPosition(Vector2d vec, int x = SQUARE_WIDTH, int y = SQUARE_WIDTH, int offset = 0);
 Vector2d getMousePosition();
 
@@ -84,6 +87,7 @@ bool onKeyUp(int);
 bool init();
 bool isLegalPosition(Piece p, Vector2d const& pos);
 
+void DrawPieces(std::vector<std::unique_ptr<Piece>>&);
 void loadPieces();
 void drawBoard();
 void drawPiece(Piece, int offset = 25);
@@ -99,6 +103,9 @@ int selectedSquare(Vector2d mousePos);
 
 int main(int argc, char** argv)
 {
+    std::vector<std::unique_ptr<Piece>> ChessPieces;
+    ChessPieces.reserve(64);
+
     if (init())
     {
         std::cout << "SDL initialize is done"
@@ -107,11 +114,14 @@ int main(int argc, char** argv)
         loadPieces();
     }
 
-    SDL_Event event;
-    Piece WhiteQueen("Queen_W", { 0, 0 }, QUEEN);
-    auto oldPosition = WhiteQueen.position;
+    ChessPieces.push_back(std::make_unique<Piece>(Piece { "Queen_B", { 0, 0 }, QUEEN }));
 
-    WhiteQueen.currentSqaure = 0;
+    SDL_Event event;
+    // Piece WhiteQueen("Queen_W", { 0, 0 }, QUEEN);
+    // auto oldPosition = WhiteQueen.position;
+    auto oldPosition = ChessPieces[0]->position;
+
+    ChessPieces[0]->currentSqaure = 0;
     while (!quit)
     {
 
@@ -119,37 +129,37 @@ int main(int argc, char** argv)
 
         if (onKeyDown(SPACE))
         {
-            if (selectedSquare(getMousePosition()) == WhiteQueen.currentSqaure)
+            if (selectedSquare(getMousePosition()) == ChessPieces[0]->currentSqaure)
             {
 
-                WhiteQueen.selected = true;
+                ChessPieces[0]->selected = true;
             }
-            auto tempPosition   = WhiteQueen.position;
-            WhiteQueen.position = getMousePosition() - SCREEN_OFFSET;
-            drawPiece(WhiteQueen, 0); // no offset, draw at mouse position
-            WhiteQueen.position = tempPosition;
+            auto tempPosition        = ChessPieces[0]->position;
+            ChessPieces[0]->position = getMousePosition() - SCREEN_OFFSET;
+            drawPiece(*ChessPieces[0], 0); // no offset, draw at mouse position
+            ChessPieces[0]->position = tempPosition;
         }
         else
         {
 
             Vector2d mouse = snapPosition(getMousePosition(), SQUARE_WIDTH, SQUARE_WIDTH, -SCREEN_OFFSET);
-            printf("mouse hover at %d & Piece square is %d \n", selectedSquare(getMousePosition()), WhiteQueen.currentSqaure);
-            if (isLegalPosition(WhiteQueen, mouse) && WhiteQueen.selected)
+            printf("mouse hover at %d & Piece square is %d \n", selectedSquare(getMousePosition()), ChessPieces[0]->currentSqaure);
+            if (isLegalPosition(*ChessPieces[0], mouse) && ChessPieces[0]->selected)
             {
 
-                WhiteQueen.position = mouse;
+                ChessPieces[0]->position = mouse;
 
-                oldPosition = WhiteQueen.position;
-                drawPiece(WhiteQueen);
-                WhiteQueen.selected      = false;
-                WhiteQueen.currentSqaure = selectedSquare(getMousePosition());
+                oldPosition = ChessPieces[0]->position;
+                drawPiece(*ChessPieces[0]);
+                ChessPieces[0]->selected      = false;
+                ChessPieces[0]->currentSqaure = selectedSquare(getMousePosition());
             }
 
             else
             {
-                WhiteQueen.position = oldPosition;
-                drawPiece(WhiteQueen);
-                WhiteQueen.selected = false;
+                ChessPieces[0]->position = oldPosition;
+                drawPiece(*ChessPieces[0]);
+                ChessPieces[0]->selected = false;
             }
         }
 
@@ -248,7 +258,12 @@ void drawBoard()
 void drawPiece(Piece p, int offset)
 {
 
+    int onSquare = p.currentSqaure;
+
+    Vector2d pos = { onSquare % 8 * SQUARE_WIDTH, onSquare % 8 / SQUARE_WIDTH };
+    //printf("Location = %d %d & Position %d , %d =  \n", pos.x, pos.y, p.position.x, p.position.y);
     SDL_Rect piecePos { p.position.x + offset, p.position.y + offset, p.m_width, p.m_height };
+
     //off setting the screen width and height;
 
     auto pieceTexture = texturesMap[p.name];
@@ -384,6 +399,11 @@ Vector2d operator/(Vector2d const& vec, int const other)
     return { vec.x / other, vec.y / other };
 }
 
+Vector2d operator*(Vector2d const& vec, int const other)
+{
+    return { vec.x * other, vec.y * other };
+}
+
 Vector2d snapPosition(Vector2d vec, int const x_snap, int const y_snap, int const offset)
 {
 
@@ -461,6 +481,18 @@ int selectedSquare(Vector2d mousePos)
     mousePos = mousePos / SQUARE_WIDTH;
     return normalizePosition(mousePos);
 }
+
+// void DrawPieces(std::vector<std::unique_ptr<Piece>>& pieces)
+// {
+//     for (auto& x : pieces)
+//     {
+//         if (x == nullptr)
+//             continue;
+//         else
+//         {
+//             drawPiece(*x);
+//         }
+//     }}
 
 /*
 

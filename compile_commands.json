@@ -1,32 +1,17 @@
 [
 {
-  "directory": "/Users/aliabdulkareem/dev/BOOK/build",
-  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DCMAKE_INTDIR=\\\"Debug\\\" -I/usr/local/include -I../include -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15 -Wall -Wextra -pedantic -Werror -m64 -std=c++17 -o CMakeFiles/Game.dir/Debug/src/Game/main.cpp.o -c /Users/aliabdulkareem/dev/BOOK/src/Game/main.cpp",
-  "file": "/Users/aliabdulkareem/dev/BOOK/src/Game/main.cpp"
+  "directory": "/Users/aliabdulkareem/dev/chess/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DCMAKE_INTDIR=\\\"Debug\\\" -I/usr/local/include -I../include -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15 -Wall -Wextra -pedantic -Werror -m64 -std=c++17 -std=gnu++17 -o CMakeFiles/Game.dir/Debug/src/main.cpp.o -c /Users/aliabdulkareem/dev/chess/src/main.cpp",
+  "file": "/Users/aliabdulkareem/dev/chess/src/main.cpp"
 },
 {
-  "directory": "/Users/aliabdulkareem/dev/BOOK/build",
-  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DCMAKE_INTDIR=\\\"Release\\\" -I/usr/local/include -I../include -O3 -DNDEBUG -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15 -Wall -Wextra -pedantic -Werror -m64 -std=c++17 -o CMakeFiles/Game.dir/Release/src/Game/main.cpp.o -c /Users/aliabdulkareem/dev/BOOK/src/Game/main.cpp",
-  "file": "/Users/aliabdulkareem/dev/BOOK/src/Game/main.cpp"
+  "directory": "/Users/aliabdulkareem/dev/chess/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DCMAKE_INTDIR=\\\"Release\\\" -I/usr/local/include -I../include -O3 -DNDEBUG -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15 -Wall -Wextra -pedantic -Werror -m64 -std=c++17 -std=gnu++17 -o CMakeFiles/Game.dir/Release/src/main.cpp.o -c /Users/aliabdulkareem/dev/chess/src/main.cpp",
+  "file": "/Users/aliabdulkareem/dev/chess/src/main.cpp"
 },
 {
-  "directory": "/Users/aliabdulkareem/dev/BOOK/build",
-  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DCMAKE_INTDIR=\\\"RelWithDebInfo\\\" -I/usr/local/include -I../include -O2 -g -DNDEBUG -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15 -Wall -Wextra -pedantic -Werror -m64 -std=c++17 -o CMakeFiles/Game.dir/RelWithDebInfo/src/Game/main.cpp.o -c /Users/aliabdulkareem/dev/BOOK/src/Game/main.cpp",
-  "file": "/Users/aliabdulkareem/dev/BOOK/src/Game/main.cpp"
-},
-{
-  "directory": "/Users/aliabdulkareem/dev/BOOK/build",
-  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DCMAKE_INTDIR=\\\"Debug\\\" -I/usr/local/include -I../include -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15 -Wall -Wextra -pedantic -Werror -m64 -std=c++17 -o CMakeFiles/Engine.dir/Debug/src/Engine/Vector.cpp.o -c /Users/aliabdulkareem/dev/BOOK/src/Engine/Vector.cpp",
-  "file": "/Users/aliabdulkareem/dev/BOOK/src/Engine/Vector.cpp"
-},
-{
-  "directory": "/Users/aliabdulkareem/dev/BOOK/build",
-  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DCMAKE_INTDIR=\\\"Release\\\" -I/usr/local/include -I../include -O3 -DNDEBUG -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15 -Wall -Wextra -pedantic -Werror -m64 -std=c++17 -o CMakeFiles/Engine.dir/Release/src/Engine/Vector.cpp.o -c /Users/aliabdulkareem/dev/BOOK/src/Engine/Vector.cpp",
-  "file": "/Users/aliabdulkareem/dev/BOOK/src/Engine/Vector.cpp"
-},
-{
-  "directory": "/Users/aliabdulkareem/dev/BOOK/build",
-  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DCMAKE_INTDIR=\\\"RelWithDebInfo\\\" -I/usr/local/include -I../include -O2 -g -DNDEBUG -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15 -Wall -Wextra -pedantic -Werror -m64 -std=c++17 -o CMakeFiles/Engine.dir/RelWithDebInfo/src/Engine/Vector.cpp.o -c /Users/aliabdulkareem/dev/BOOK/src/Engine/Vector.cpp",
-  "file": "/Users/aliabdulkareem/dev/BOOK/src/Engine/Vector.cpp"
+  "directory": "/Users/aliabdulkareem/dev/chess/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++ -DCMAKE_INTDIR=\\\"RelWithDebInfo\\\" -I/usr/local/include -I../include -O2 -g -DNDEBUG -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15 -Wall -Wextra -pedantic -Werror -m64 -std=c++17 -std=gnu++17 -o CMakeFiles/Game.dir/RelWithDebInfo/src/main.cpp.o -c /Users/aliabdulkareem/dev/chess/src/main.cpp",
+  "file": "/Users/aliabdulkareem/dev/chess/src/main.cpp"
 }
 ]
