@@ -132,8 +132,8 @@ int main(int argc, char** argv)
         else
         {
 
-            printf("mouse hover at %d\n", selectedSquare(getMousePosition()));
             Vector2d mouse = snapPosition(getMousePosition(), SQUARE_WIDTH, SQUARE_WIDTH, -SCREEN_OFFSET);
+            printf("mouse hover at %d & Piece square is %d \n", selectedSquare(getMousePosition()), WhiteQueen.currentSqaure);
             if (isLegalPosition(WhiteQueen, mouse) && WhiteQueen.selected)
             {
 
@@ -141,7 +141,8 @@ int main(int argc, char** argv)
 
                 oldPosition = WhiteQueen.position;
                 drawPiece(WhiteQueen);
-                WhiteQueen.selected = false;
+                WhiteQueen.selected      = false;
+                WhiteQueen.currentSqaure = selectedSquare(getMousePosition());
             }
 
             else
