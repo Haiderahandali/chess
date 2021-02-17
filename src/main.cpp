@@ -80,6 +80,7 @@ Vector2d operator/(Vector2d const&, int const);
 Vector2d operator*(Vector2d const&, int const);
 Vector2d snapPosition(Vector2d vec, int x = SQUARE_WIDTH, int y = SQUARE_WIDTH, int offset = 0);
 Vector2d getMousePosition();
+Vector2d getPositionFromSquare(int square);
 
 bool onKeyDown(int);
 bool onKeyUp(int);
@@ -103,8 +104,14 @@ int selectedSquare(Vector2d mousePos);
 
 int main(int argc, char** argv)
 {
+    int onSquare = 0;
     std::vector<std::unique_ptr<Piece>> ChessPieces;
     ChessPieces.reserve(64);
+
+    for (int i = 0; i < 64; ++i)
+    {
+        ChessPieces[i] = nullptr;
+    }
 
     if (init())
     {
@@ -114,12 +121,14 @@ int main(int argc, char** argv)
         loadPieces();
     }
 
-    ChessPieces.push_back(std::make_unique<Piece>(Piece { "Queen_B", { 0, 0 }, QUEEN }));
+    ChessPieces[0] = std::make_unique<Piece>(Piece { "Queen_B", { 0, 0 }, QUEEN });
 
     SDL_Event event;
     // Piece WhiteQueen("Queen_W", { 0, 0 }, QUEEN);
     // auto oldPosition = WhiteQueen.position;
     auto oldPosition = ChessPieces[0]->position;
+
+    std::unique_ptr<Piece> selectedPiece = nullptr;
 
     ChessPieces[0]->currentSqaure = 0;
     while (!quit)
@@ -129,7 +138,8 @@ int main(int argc, char** argv)
 
         if (onKeyDown(SPACE))
         {
-            if (selectedSquare(getMousePosition()) == ChessPieces[0]->currentSqaure)
+            onSquare = selectedSquare(getMousePosition());
+            if (onSquare == ChessPieces[0]->currentSqaure)
             {
 
                 ChessPieces[0]->selected = true;
@@ -260,7 +270,7 @@ void drawPiece(Piece p, int offset)
 
     int onSquare = p.currentSqaure;
 
-    Vector2d pos = { onSquare % 8 * SQUARE_WIDTH, onSquare % 8 / SQUARE_WIDTH };
+    auto pos = getPositionFromSquare(onSquare);
     //printf("Location = %d %d & Position %d , %d =  \n", pos.x, pos.y, p.position.x, p.position.y);
     SDL_Rect piecePos { p.position.x + offset, p.position.y + offset, p.m_width, p.m_height };
 
@@ -482,6 +492,10 @@ int selectedSquare(Vector2d mousePos)
     return normalizePosition(mousePos);
 }
 
+Vector2d getPositionFromSquare(int square)
+{
+    return { square % 8 * SQUARE_WIDTH, square / 8 * SQUARE_WIDTH };
+}
 // void DrawPieces(std::vector<std::unique_ptr<Piece>>& pieces)
 // {
 //     for (auto& x : pieces)
