@@ -17,6 +17,7 @@ bool quit = false;
 const int SCREEN_WIDTH  = 640;
 const int SCREEN_HEIGHT = 640;
 const int SCREEN_OFFSET = 25;
+const int SQUARE_WIDTH  = 75;
 
 #define SPACE SDL_SCANCODE_SPACE
 #define WHITE 1
@@ -60,8 +61,11 @@ struct Piece
     Vector2d position;
     int m_width  = 60;
     int m_height = 60;
+    int currentSqaure;
 
-    void snapPosition(int const x = 75, int const y = 75, int const offset = 0);
+    bool selected = false;
+
+    void snapPosition(int const x = SQUARE_WIDTH, int const y = SQUARE_WIDTH, int const offset = 0);
     Vector2d pieceOffset = Vector2d { this->m_width / 2, this->m_height / 2 };
 };
 Vector2d operator-(Vector2d const&, Vector2d const);
@@ -71,7 +75,7 @@ Vector2d operator+(Vector2d const&, int const);
 
 Vector2d operator-(Vector2d const&, int const);
 Vector2d operator/(Vector2d const&, int const);
-Vector2d snapPosition(Vector2d vec, int x = 75, int y = 75, int offset = 0);
+Vector2d snapPosition(Vector2d vec, int x = SQUARE_WIDTH, int y = SQUARE_WIDTH, int offset = 0);
 Vector2d getMousePosition();
 
 bool onKeyDown(int);
@@ -91,6 +95,7 @@ SDL_Texture* loadTexture(char const*);
 
 int normalizePosition(Vector2d const&);
 int abs(int);
+int selectedSquare(Vector2d mousePos);
 
 int main(int argc, char** argv)
 {
@@ -105,6 +110,8 @@ int main(int argc, char** argv)
     SDL_Event event;
     Piece WhiteQueen("Queen_W", { 0, 0 }, QUEEN);
     auto oldPosition = WhiteQueen.position;
+
+    WhiteQueen.currentSqaure = 0;
     while (!quit)
     {
 
@@ -118,9 +125,11 @@ int main(int argc, char** argv)
         }
         else
         {
-            Vector2d mouse = snapPosition(getMousePosition(), 75, 75, -SCREEN_OFFSET);
-            if (isLegalPosition(WhiteQueen, mouse))
+            printf("mouse hover at %d\n", selectedSquare(getMousePosition()));
+            Vector2d mouse = snapPosition(getMousePosition(), SQUARE_WIDTH, SQUARE_WIDTH, -SCREEN_OFFSET);
+            if (isLegalPosition(WhiteQueen, mouse) && WhiteQueen.selected)
             {
+
                 WhiteQueen.position = mouse;
 
                 oldPosition = WhiteQueen.position;
@@ -381,7 +390,7 @@ Vector2d snapPosition(Vector2d vec, int const x_snap, int const y_snap, int cons
 
 int normalizePosition(Vector2d const& pos)
 {
-    return pos.x * 8 + pos.y;
+    return pos.y * 8 + pos.x;
 }
 int abs(int num)
 {
@@ -395,8 +404,8 @@ bool isLegalPosition(Piece p, Vector2d const& pos)
 {
     bool legal = false;
 
-    int x = (p.position.x - pos.x) / 75;
-    int y = (p.position.y - pos.y) / 75;
+    int x = (p.position.x - pos.x) / SQUARE_WIDTH;
+    int y = (p.position.y - pos.y) / SQUARE_WIDTH;
 
     y = abs(y);
     x = abs(x);
@@ -433,6 +442,13 @@ bool isLegalPosition(Piece p, Vector2d const& pos)
         break;
     }
     return legal;
+}
+
+int selectedSquare(Vector2d mousePos)
+{
+    mousePos = mousePos - SCREEN_OFFSET;
+    mousePos = mousePos / SQUARE_WIDTH;
+    return normalizePosition(mousePos);
 }
 
 /*
