@@ -104,14 +104,18 @@ int selectedSquare(Vector2d mousePos);
 
 int main(int argc, char** argv)
 {
-    int onSquare = 0;
+    bool selected  = false;
+    int destSquare = 0;
+    int srcSquare  = 0;
+
     std::vector<std::unique_ptr<Piece>> ChessPieces;
-    ChessPieces.reserve(64);
+    ChessPieces.resize(64);
 
     for (int i = 0; i < 64; ++i)
     {
         ChessPieces[i] = nullptr;
     }
+    ChessPieces[0] = std::make_unique<Piece>(Piece { "Queen_B", { 0, 0 }, QUEEN });
 
     if (init())
     {
@@ -121,8 +125,6 @@ int main(int argc, char** argv)
         loadPieces();
     }
 
-    ChessPieces[0] = std::make_unique<Piece>(Piece { "Queen_B", { 0, 0 }, QUEEN });
-
     SDL_Event event;
     // Piece WhiteQueen("Queen_W", { 0, 0 }, QUEEN);
     // auto oldPosition = WhiteQueen.position;
@@ -131,6 +133,7 @@ int main(int argc, char** argv)
     std::unique_ptr<Piece> selectedPiece = nullptr;
 
     ChessPieces[0]->currentSqaure = 0;
+
     while (!quit)
     {
 
@@ -138,38 +141,55 @@ int main(int argc, char** argv)
 
         if (onKeyDown(SPACE))
         {
-            onSquare = selectedSquare(getMousePosition());
-            if (onSquare == ChessPieces[0]->currentSqaure)
+
+            if (ChessPieces[destSquare] == nullptr)
             {
+                drawPiece(*ChessPieces[srcSquare]);
 
-                ChessPieces[0]->selected = true;
-            }
-            auto tempPosition        = ChessPieces[0]->position;
-            ChessPieces[0]->position = getMousePosition() - SCREEN_OFFSET;
-            drawPiece(*ChessPieces[0], 0); // no offset, draw at mouse position
-            ChessPieces[0]->position = tempPosition;
-        }
-        else
-        {
+                if (isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare)) && ChessPieces[srcSquare]->selected)
+                {
 
-            Vector2d mouse = snapPosition(getMousePosition(), SQUARE_WIDTH, SQUARE_WIDTH, -SCREEN_OFFSET);
-            printf("mouse hover at %d & Piece square is %d \n", selectedSquare(getMousePosition()), ChessPieces[0]->currentSqaure);
-            if (isLegalPosition(*ChessPieces[0], mouse) && ChessPieces[0]->selected)
-            {
+                    ChessPieces[srcSquare]->position = getPositionFromSquare(destSquare);
 
-                ChessPieces[0]->position = mouse;
+                    oldPosition = ChessPieces[srcSquare]->position;
 
-                oldPosition = ChessPieces[0]->position;
-                drawPiece(*ChessPieces[0]);
-                ChessPieces[0]->selected      = false;
-                ChessPieces[0]->currentSqaure = selectedSquare(getMousePosition());
+                    ChessPieces[srcSquare]->selected      = false;
+                    ChessPieces[srcSquare]->currentSqaure = selectedSquare(getMousePosition());
+                    ChessPieces[destSquare]               = std::move(ChessPieces[srcSquare]);
+                    // ChessPieces[srcSquare]                = nullptr;
+                }
+
+                // else
+                // {
+                //     ChessPieces[srcSquare]->position = oldPosition;
+                //     drawPiece(*ChessPieces[srcSquare]);
+                //     ChessPieces[srcSquare]->selected = false;
+                // }
             }
 
             else
             {
-                ChessPieces[0]->position = oldPosition;
-                drawPiece(*ChessPieces[0]);
-                ChessPieces[0]->selected = false;
+
+                srcSquare = destSquare;
+
+                ChessPieces[destSquare]->selected = true;
+            }
+        }
+        else
+        {
+            destSquare = selectedSquare(getMousePosition());
+
+            for (auto& x : ChessPieces)
+            {
+                if (x == nullptr)
+                {
+                    continue;
+                }
+                else
+                {
+                    printf("Piece at position [%d,%d], currentSqaure = %d & is selected %d , srcSQ =%d & desSQ =%d \n", x->position.x, x->position.y, x->currentSqaure, x->selected, srcSquare, destSquare);
+                    drawPiece(*x);
+                }
             }
         }
 
