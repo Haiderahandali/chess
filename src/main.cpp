@@ -78,6 +78,18 @@ struct Piece
 
     void snapPosition(int const x = SQUARE_WIDTH, int const y = SQUARE_WIDTH, int const offset = 0);
     Vector2d pieceOffset = Vector2d { this->m_width / 2, this->m_height / 2 };
+
+    SDL_RendererFlip flip()
+    {
+        SDL_RendererFlip f = SDL_FLIP_NONE;
+
+        if (this->color == WHITE)
+            f = static_cast<SDL_RendererFlip>(SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL);
+        else
+            f = SDL_FLIP_NONE;
+
+        return f;
+    }
 };
 Vector2d operator-(Vector2d const&, Vector2d const);
 Vector2d operator+(Vector2d const&, Vector2d const);
@@ -104,6 +116,8 @@ void drawPiece(Piece, int offset = 25);
 
 void eventLoop(SDL_Event event);
 void render();
+
+void LoadStartPosition(std::vector<std::unique_ptr<Piece>>&);
 
 SDL_Texture* loadTexture(char const*);
 
@@ -147,6 +161,13 @@ int main(int argc, char** argv)
     {
         drawBoard();
 
+        if (onKeyDown(SDL_SCANCODE_UP))
+        {
+            LoadStartPosition(ChessPieces);
+            WhiteTurn  = false;
+            srcSquare  = 56;
+            destSquare = 56;
+        }
         if (onKeyDown(SPACE))
         {
             DrawPieces(ChessPieces);
@@ -308,7 +329,7 @@ void drawPiece(Piece p, int offset)
     //off setting the screen width and height;
 
     auto pieceTexture = texturesMap[p.name];
-    SDL_RenderCopy(gRenderer, pieceTexture, NULL, &piecePos);
+    SDL_RenderCopyEx(gRenderer, pieceTexture, NULL, &piecePos, 0, 0, p.flip());
 }
 
 SDL_Texture* loadTexture(char const* path)
@@ -509,6 +530,10 @@ bool isLegalPosition(Piece p, Vector2d const& pos)
         if (y <= 1 && x <= 1)
             legal = true;
         break;
+    case PAWN:
+        if (y == 1 && x == 0)
+            legal = true;
+        break;
 
     default:
         break;
@@ -540,6 +565,71 @@ void DrawPieces(std::vector<std::unique_ptr<Piece>>& pieces)
     }
 }
 
+void LoadStartPosition(std::vector<std::unique_ptr<Piece>>& v)
+{
+    v.clear();
+    v.resize(64);
+    for (auto& x : v)
+        x = nullptr;
+
+    //--------------------- LOAD BLACK PIECES------------------
+
+    for (int i = 0; i < 8; ++i)
+    {
+        v[48 + i] = std::make_unique<Piece>(Piece { "Pawn_B", { i * SQUARE_WIDTH, 450 }, PAWN, BLACK });
+
+        v[48 + i]->currentSqaure = 48 + i;
+    }
+
+    v[56] = std::make_unique<Piece>(Piece { "Rook_B", { 0, 525 }, ROOK, BLACK });
+    v[57] = std::make_unique<Piece>(Piece { "Night_B", { 75, 525 }, KNIGHT, BLACK });
+    v[58] = std::make_unique<Piece>(Piece { "Bishop_B", { 150, 525 }, BISHOP, BLACK });
+
+    v[59] = std::make_unique<Piece>(Piece { "King_B", { 225, 525 }, KING, BLACK });
+    v[60] = std::make_unique<Piece>(Piece { "Queen_B", { 300, 525 }, QUEEN, BLACK });
+
+    v[61] = std::make_unique<Piece>(Piece { "Bishop_B", { 375, 525 }, BISHOP, BLACK });
+    v[62] = std::make_unique<Piece>(Piece { "Night_B", { 450, 525 }, KNIGHT, BLACK });
+    v[63] = std::make_unique<Piece>(Piece { "Rook_B", { 525, 525 }, ROOK, BLACK });
+
+    v[56]->currentSqaure = 56;
+    v[57]->currentSqaure = 57;
+    v[58]->currentSqaure = 58;
+    v[59]->currentSqaure = 59;
+    v[60]->currentSqaure = 60;
+    v[61]->currentSqaure = 61;
+    v[62]->currentSqaure = 62;
+    v[63]->currentSqaure = 63;
+
+    //------------------------- LOAD WHITE PIECES --------------------------//
+
+    for (int i = 0; i < 8; ++i)
+    {
+        v[8 + i] = std::make_unique<Piece>(Piece { "Pawn_W", { i * SQUARE_WIDTH, 75 }, PAWN, WHITE });
+
+        v[8 + i]->currentSqaure = 8 + i;
+    }
+
+    v[0] = std::make_unique<Piece>(Piece { "Rook_W", { 0, 0 }, ROOK, WHITE });
+    v[1] = std::make_unique<Piece>(Piece { "Night_W", { 75, 0 }, KNIGHT, WHITE });
+    v[2] = std::make_unique<Piece>(Piece { "Bishop_W", { 150, 0 }, BISHOP, WHITE });
+
+    v[3] = std::make_unique<Piece>(Piece { "King_W", { 225, 0 }, KING, WHITE });
+    v[4] = std::make_unique<Piece>(Piece { "Queen_W", { 300, 0 }, QUEEN, WHITE });
+
+    v[5] = std::make_unique<Piece>(Piece { "Bishop_W", { 375, 0 }, BISHOP, WHITE });
+    v[6] = std::make_unique<Piece>(Piece { "Night_W", { 450, 0 }, KNIGHT, WHITE });
+    v[7] = std::make_unique<Piece>(Piece { "Rook_W", { 525, 0 }, ROOK, WHITE });
+
+    v[0]->currentSqaure = 0;
+    v[1]->currentSqaure = 1;
+    v[2]->currentSqaure = 2;
+    v[3]->currentSqaure = 3;
+    v[4]->currentSqaure = 4;
+    v[5]->currentSqaure = 5;
+    v[6]->currentSqaure = 6;
+    v[7]->currentSqaure = 7;
+}
 /*
 
 
