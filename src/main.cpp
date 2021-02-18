@@ -22,11 +22,13 @@ const int SCREEN_OFFSET = 25;
 const int SQUARE_WIDTH  = 75;
 
 #define SPACE SDL_SCANCODE_SPACE
-#define WHITE 1
-#define BLACK 0
-#define Color int
-#define Type int
 
+enum COLOR
+{
+    BLACK,
+    WHITE
+
+};
 enum PIECE_TYPE
 {
     KNIGHT,
@@ -48,7 +50,7 @@ struct Vector2d
 
 struct Piece
 {
-    Piece(char const* name, Vector2d pos, Type type, Color color = 1)
+    Piece(char const* name, Vector2d pos, PIECE_TYPE type, COLOR color)
         : color { color }
         , type { type }
         , name { name }
@@ -56,8 +58,8 @@ struct Piece
 
     {
     }
-    Color color; //white or black
-    Type type; // king, knight, queen, etc.
+    COLOR color; //white or black
+    PIECE_TYPE type; // king, knight, queen, etc.
     char const* name;
     SDL_Texture* tex;
     Vector2d position;
@@ -104,10 +106,11 @@ int selectedSquare(Vector2d mousePos);
 
 int main(int argc, char** argv)
 {
-    bool selected  = false;
+    // bool selected  = false;
     int destSquare = 0;
     int srcSquare  = 0;
 
+    bool WhiteTurn = true;
     std::vector<std::unique_ptr<Piece>> ChessPieces;
     ChessPieces.resize(64);
 
@@ -115,7 +118,8 @@ int main(int argc, char** argv)
     {
         ChessPieces[i] = nullptr;
     }
-    ChessPieces[0] = std::make_unique<Piece>(Piece { "Queen_B", { 0, 0 }, QUEEN });
+    ChessPieces[0]  = std::make_unique<Piece>(Piece { "Queen_B", { 0, 0 }, QUEEN, BLACK });
+    ChessPieces[63] = std::make_unique<Piece>(Piece { "Night_W", { 525, 525 }, KNIGHT, WHITE });
 
     if (init())
     {
@@ -128,11 +132,10 @@ int main(int argc, char** argv)
     SDL_Event event;
     // Piece WhiteQueen("Queen_W", { 0, 0 }, QUEEN);
     // auto oldPosition = WhiteQueen.position;
-    auto oldPosition = ChessPieces[0]->position;
+    // auto oldPosition = ChessPieces[0]->position;
 
-    std::unique_ptr<Piece> selectedPiece = nullptr;
-
-    ChessPieces[0]->currentSqaure = 0;
+    ChessPieces[63]->currentSqaure = 64;
+    ChessPieces[0]->currentSqaure  = 0;
 
     while (!quit)
     {
@@ -141,17 +144,23 @@ int main(int argc, char** argv)
 
         if (onKeyDown(SPACE))
         {
+            for (auto& x : ChessPieces)
+            {
+                if (x != nullptr)
+                    drawPiece(*x);
+            }
 
             if (ChessPieces[destSquare] == nullptr)
             {
                 drawPiece(*ChessPieces[srcSquare]);
 
-                if (isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare)) && ChessPieces[srcSquare]->selected)
+                if (isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare)) && ChessPieces[srcSquare]->selected && ChessPieces[srcSquare]->color == WhiteTurn)
                 {
 
+                    WhiteTurn                        = !WhiteTurn;
                     ChessPieces[srcSquare]->position = getPositionFromSquare(destSquare);
 
-                    oldPosition = ChessPieces[srcSquare]->position;
+                    // oldPosition = ChessPieces[srcSquare]->position;
 
                     ChessPieces[srcSquare]->selected      = false;
                     ChessPieces[srcSquare]->currentSqaure = selectedSquare(getMousePosition());
@@ -288,9 +297,9 @@ void drawBoard()
 void drawPiece(Piece p, int offset)
 {
 
-    int onSquare = p.currentSqaure;
+    // int onSquare = p.currentSqaure;
 
-    auto pos = getPositionFromSquare(onSquare);
+    // auto pos = getPositionFromSquare(onSquare);
     //printf("Location = %d %d & Position %d , %d =  \n", pos.x, pos.y, p.position.x, p.position.y);
     SDL_Rect piecePos { p.position.x + offset, p.position.y + offset, p.m_width, p.m_height };
 
@@ -336,7 +345,7 @@ void render()
 
 int clamp(float pos)
 {
-    return 1;
+    return static_cast<int>(pos);
 }
 void loadPieces()
 {
