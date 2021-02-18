@@ -108,7 +108,7 @@ bool onKeyUp(int);
 
 bool init();
 bool isLegalPosition(Piece p, Vector2d const& pos);
-
+bool islegalMove(std::unique_ptr<Piece>& src, Vector2d dest, std::vector<std::unique_ptr<Piece>>& v);
 void DrawPieces(std::vector<std::unique_ptr<Piece>>&);
 void loadPieces();
 void drawBoard();
@@ -123,6 +123,10 @@ SDL_Texture* loadTexture(char const*);
 
 int normalizePosition(Vector2d const&);
 int abs(int);
+inline int max(int x, int y)
+{
+    return x > y ? x : y;
+}
 int selectedSquare(Vector2d mousePos);
 
 int main(int argc, char** argv)
@@ -184,7 +188,10 @@ int main(int argc, char** argv)
                 else if (ChessPieces[destSquare]->color != WhiteTurn) //clicked an enemy piece
 
                 {
-                    if (ChessPieces[srcSquare]->selected && ChessPieces[srcSquare]->color == WhiteTurn && isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare)))
+                    if (ChessPieces[srcSquare]->selected
+                        && ChessPieces[srcSquare]->color == WhiteTurn
+                        && isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare))
+                        && islegalMove(ChessPieces[srcSquare], getPositionFromSquare(destSquare), ChessPieces))
                     {
 
                         WhiteTurn                        = !WhiteTurn;
@@ -200,7 +207,10 @@ int main(int argc, char** argv)
             }
             else if (ChessPieces[destSquare] == nullptr) //clicked an empty square
             {
-                if (ChessPieces[srcSquare]->selected && ChessPieces[srcSquare]->color == WhiteTurn && isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare)))
+                if (ChessPieces[srcSquare]->selected
+                    && ChessPieces[srcSquare]->color == WhiteTurn
+                    && isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare))
+                    && islegalMove(ChessPieces[srcSquare], getPositionFromSquare(destSquare), ChessPieces))
                 {
 
                     WhiteTurn                        = !WhiteTurn;
@@ -629,6 +639,44 @@ void LoadStartPosition(std::vector<std::unique_ptr<Piece>>& v)
     v[5]->currentSqaure = 5;
     v[6]->currentSqaure = 6;
     v[7]->currentSqaure = 7;
+}
+
+bool islegalMove(std::unique_ptr<Piece>& src, Vector2d dest, std::vector<std::unique_ptr<Piece>>& v)
+{
+    bool legal = false;
+
+    switch (src->type)
+    {
+    case KNIGHT: {
+        legal = true;
+        break;
+    }
+
+    case BISHOP: {
+        int x = dest.x - src->position.x;
+        int y = dest.y - src->position.y;
+
+        auto numSqaures = max(abs(x / SQUARE_WIDTH), abs(y / SQUARE_WIDTH));
+        for (int i = 1; i < numSqaures; ++i)
+        {
+            Vector2d nextSquare = { src->position.x + x * i / (numSqaures), src->position.y + y * i / (numSqaures) };
+            nextSquare = nextSquare + SCREEN_OFFSET;
+            auto square = selectedSquare(nextSquare);
+            if (v[square] != nullptr)
+            {
+                return false;
+                break;
+            }
+        }
+        legal = true;
+        break;
+    }
+
+    default:
+        legal = true;
+        break;
+    }
+    return legal;
 }
 /*
 
