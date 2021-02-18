@@ -652,7 +652,9 @@ bool islegalMove(std::unique_ptr<Piece>& src, Vector2d dest, std::vector<std::un
         break;
     }
 
-    case BISHOP: {
+    case BISHOP:
+    case ROOK:
+    case QUEEN: {
         int x = dest.x - src->position.x;
         int y = dest.y - src->position.y;
 
@@ -660,8 +662,8 @@ bool islegalMove(std::unique_ptr<Piece>& src, Vector2d dest, std::vector<std::un
         for (int i = 1; i < numSqaures; ++i)
         {
             Vector2d nextSquare = { src->position.x + x * i / (numSqaures), src->position.y + y * i / (numSqaures) };
-            nextSquare = nextSquare + SCREEN_OFFSET;
-            auto square = selectedSquare(nextSquare);
+            nextSquare          = nextSquare + SCREEN_OFFSET;
+            auto square         = selectedSquare(nextSquare);
             if (v[square] != nullptr)
             {
                 return false;
