@@ -108,9 +108,9 @@ int main(int argc, char** argv)
 {
     // bool selected  = false;
     int destSquare = 0;
-    int srcSquare  = 0;
+    int srcSquare  = 63;
 
-    bool WhiteTurn = true;
+    bool WhiteTurn = false;
     std::vector<std::unique_ptr<Piece>> ChessPieces;
     ChessPieces.resize(64);
 
@@ -121,6 +121,9 @@ int main(int argc, char** argv)
     ChessPieces[0]  = std::make_unique<Piece>(Piece { "Queen_B", { 0, 0 }, QUEEN, BLACK });
     ChessPieces[63] = std::make_unique<Piece>(Piece { "Night_W", { 525, 525 }, KNIGHT, WHITE });
 
+    ChessPieces[63]->currentSqaure = 63;
+    ChessPieces[0]->currentSqaure  = 0;
+
     if (init())
     {
         std::cout << "SDL initialize is done"
@@ -130,12 +133,6 @@ int main(int argc, char** argv)
     }
 
     SDL_Event event;
-    // Piece WhiteQueen("Queen_W", { 0, 0 }, QUEEN);
-    // auto oldPosition = WhiteQueen.position;
-    // auto oldPosition = ChessPieces[0]->position;
-
-    ChessPieces[63]->currentSqaure = 64;
-    ChessPieces[0]->currentSqaure  = 0;
 
     while (!quit)
     {
@@ -145,43 +142,36 @@ int main(int argc, char** argv)
         if (onKeyDown(SPACE))
         {
             for (auto& x : ChessPieces)
-            {
+
                 if (x != nullptr)
                     drawPiece(*x);
-            }
 
-            if (ChessPieces[destSquare] == nullptr)
+            if (ChessPieces[destSquare] == nullptr || (ChessPieces[srcSquare]->color != ChessPieces[destSquare]->color))
             {
-                drawPiece(*ChessPieces[srcSquare]);
 
-                if (isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare)) && ChessPieces[srcSquare]->selected && ChessPieces[srcSquare]->color == WhiteTurn)
+                if (ChessPieces[srcSquare]->selected && ChessPieces[srcSquare]->color == WhiteTurn && isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare)))
                 {
 
                     WhiteTurn                        = !WhiteTurn;
                     ChessPieces[srcSquare]->position = getPositionFromSquare(destSquare);
 
-                    // oldPosition = ChessPieces[srcSquare]->position;
-
-                    ChessPieces[srcSquare]->selected      = false;
                     ChessPieces[srcSquare]->currentSqaure = selectedSquare(getMousePosition());
                     ChessPieces[destSquare]               = std::move(ChessPieces[srcSquare]);
-                    // ChessPieces[srcSquare]                = nullptr;
+                    ChessPieces[srcSquare]                = nullptr;
+                    srcSquare                             = destSquare;
+                    ChessPieces[srcSquare]->selected      = false;
                 }
-
-                // else
-                // {
-                //     ChessPieces[srcSquare]->position = oldPosition;
-                //     drawPiece(*ChessPieces[srcSquare]);
-                //     ChessPieces[srcSquare]->selected = false;
-                // }
             }
 
             else
             {
+                if (ChessPieces[destSquare]->color == WhiteTurn)
+                {
 
-                srcSquare = destSquare;
+                    srcSquare = destSquare;
 
-                ChessPieces[destSquare]->selected = true;
+                    ChessPieces[srcSquare]->selected = true;
+                }
             }
         }
         else
