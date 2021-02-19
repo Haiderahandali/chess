@@ -90,6 +90,7 @@ struct Piece
 
         return f;
     }
+    Piece& operator=(Piece const&) = default;
 };
 Vector2d operator-(Vector2d const&, Vector2d const);
 Vector2d operator+(Vector2d const&, Vector2d const);
@@ -105,6 +106,9 @@ Vector2d getPositionFromSquare(int square);
 
 bool onKeyDown(int);
 bool onKeyUp(int);
+
+bool WhiteOnCheck(std::vector<std::unique_ptr<Piece>>&);
+bool BlackOnCheck(std::vector<std::unique_ptr<Piece>>&);
 
 bool init();
 bool isLegalPosition(Piece p, Vector2d const& pos);
@@ -177,7 +181,7 @@ int main(int argc, char** argv)
             DrawPieces(ChessPieces);
             if (ChessPieces[destSquare] != nullptr)
             {
-                //clicked the same color piece
+                //clicked the same color piece // ------------- Selection -------------
                 if (ChessPieces[destSquare]->color == WhiteTurn)
                 {
                     ChessPieces[srcSquare]->selected  = false;
@@ -202,6 +206,11 @@ int main(int argc, char** argv)
                         ChessPieces[srcSquare]                = nullptr;
                         srcSquare                             = destSquare;
                         ChessPieces[srcSquare]->selected      = false;
+
+                        if (WhiteOnCheck(ChessPieces) || BlackOnCheck(ChessPieces))
+                        {
+                            printf("The King is in danger! invalid move\n");
+                        }
                     }
                 }
             }
@@ -221,6 +230,10 @@ int main(int argc, char** argv)
                     ChessPieces[srcSquare]                = nullptr;
                     srcSquare                             = destSquare;
                     ChessPieces[srcSquare]->selected      = false;
+                    if (WhiteOnCheck(ChessPieces) || BlackOnCheck(ChessPieces))
+                    {
+                        printf("The King is in danger! invalid move\n");
+                    }
                 }
             }
         }
@@ -232,7 +245,7 @@ int main(int argc, char** argv)
             {
                 if (x != nullptr)
                 {
-                    printf(" piece at %d %d , Selected =%d , src =%d , dest =%d & currentSqaure =%d \n", x->position.x, x->position.y, x->selected, srcSquare, destSquare, x->currentSqaure);
+                    // printf(" piece at %d %d , Selected =%d , src =%d , dest =%d & currentSqaure =%d \n", x->position.x, x->position.y, x->selected, srcSquare, destSquare, x->currentSqaure);
                 }
             }
         }
@@ -726,7 +739,7 @@ bool islegalMove(std::unique_ptr<Piece>& src, Vector2d dest, std::vector<std::un
             {
                 auto square       = src->currentSqaure - 8;
                 auto front_square = square - 8;
-                if (v[square] == nullptr && src->position.y == (525-SQUARE_WIDTH) && v[front_square] == nullptr)
+                if (v[square] == nullptr && src->position.y == (525 - SQUARE_WIDTH) && v[front_square] == nullptr)
                     legal = true;
             }
             else
@@ -742,6 +755,57 @@ bool islegalMove(std::unique_ptr<Piece>& src, Vector2d dest, std::vector<std::un
     }
     return legal;
 }
+
+bool WhiteOnCheck(std::vector<std::unique_ptr<Piece>>& v)
+{
+    bool onCheck = false;
+    Piece* p;
+    for (auto& x : v)
+    {
+        if (x != nullptr && x->color == WHITE && x->type == KING)
+        {
+            p = x.get();
+            break;
+        }
+    }
+    auto k_position = p->position;
+    for (auto& x : v)
+    {
+        if (x != nullptr && x->color == BLACK && (isLegalPosition(*x, k_position) && islegalMove(x, k_position, v)))
+        {
+            onCheck = true;
+            break;
+        }
+    }
+
+    return onCheck;
+}
+
+bool BlackOnCheck(std::vector<std::unique_ptr<Piece>>& v)
+{
+    bool onCheck = false;
+    Piece* p;
+    for (auto& x : v)
+    {
+        if (x != nullptr && x->color == BLACK && x->type == KING)
+        {
+            p = x.get();
+            break;
+        }
+    }
+    auto k_position = p->position;
+    for (auto& x : v)
+    {
+        if (x != nullptr && x->color == WHITE && (isLegalPosition(*x, k_position) && islegalMove(x, k_position, v)))
+        {
+            onCheck = true;
+            break;
+        }
+    }
+
+    return onCheck;
+}
+
 /*
 
 
