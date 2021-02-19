@@ -102,6 +102,7 @@ Game_EXTERNAL_OBJECTS =
 ../bin/debug/Game: /usr/local/lib/libSDL2_image.dylib
 ../bin/debug/Game: /usr/local/lib/libSDL2main.a
 ../bin/debug/Game: /usr/local/lib/libSDL2.dylib
+../bin/debug/Game: /usr/local/lib/libSDL2_ttf.dylib
 ../bin/debug/Game: CMakeFiles/Game.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/aliabdulkareem/dev/chess/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ../bin/debug/Game"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Game.dir/link.txt --verbose=$(VERBOSE)

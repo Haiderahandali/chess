@@ -1,9 +1,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include <map>
 #include <memory>
-#include <string>
 #include <vector>
 //------------------------------------------------------ GLOBAL VARIABLE STARTS --------------------------------------------------//
 //------------------------------------------------------ GLOBAL VARIABLE STARTS --------------------------------------------------//
@@ -14,7 +14,11 @@ SDL_Texture* gTexture      = NULL;
 SDL_Renderer* gRenderer    = NULL;
 SDL_Window* gWindow        = NULL;
 
-bool quit = false;
+bool w_c_m = false;
+bool b_c_m = false;
+
+bool quit
+    = false;
 
 const int SCREEN_WIDTH  = 640;
 const int SCREEN_HEIGHT = 640;
@@ -22,13 +26,6 @@ const int SCREEN_OFFSET = 25;
 const int SQUARE_WIDTH  = 75;
 
 #define SPACE SDL_SCANCODE_SPACE
-
-enum SELECTED
-{
-    EMPTY,
-    SAME_COLOR,
-    OPPOSITE_COLOR
-};
 
 enum COLOR
 {
@@ -69,7 +66,6 @@ struct Piece
     COLOR color; //white or black
     PIECE_TYPE type; // king, knight, queen, etc.
     char const* name;
-    SDL_Texture* tex;
     Vector2d position;
     int m_width  = 60;
     int m_height = 60;
@@ -78,7 +74,6 @@ struct Piece
     bool selected = false;
 
     void snapPosition(int const x = SQUARE_WIDTH, int const y = SQUARE_WIDTH, int const offset = 0);
-    Vector2d pieceOffset = Vector2d { this->m_width / 2, this->m_height / 2 };
 
     SDL_RendererFlip flip()
     {
@@ -190,13 +185,15 @@ int main(int argc, char** argv)
             if (WhiteCheckMate(ChessPieces))
             {
                 printf("White is Check mated \n");
-                end = true;
+                end   = true;
+                w_c_m = true;
             }
             else if (BlackCheckMate(ChessPieces))
             {
 
                 printf("Black is Check mated \n");
-                end = true;
+                end   = true;
+                b_c_m = true;
             }
 
             if (onKeyDown(SPACE))
@@ -439,6 +436,57 @@ SDL_Texture* loadTexture(char const* path)
 
 void render()
 {
+    if (w_c_m)
+    {
+        if (TTF_Init() == -1)
+        {
+            printf("TTF_Init: %s\n", TTF_GetError());
+            exit(2);
+        }
+        else
+        {
+            TTF_Font* Sans = TTF_OpenFont("/Users/aliabdulkareem/dev/chess/res/White_Mate.ttf", 24); //this opens a font style and sets a size
+
+            SDL_Color White = { 0, 255, 255, 255 }; // this is the color in rgb format, maxing out all would give you the color white, and it will be your text's color
+
+            SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, "White is Check Mated", White); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
+
+            SDL_Texture* Message = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage); //now you can convert it into a texture
+            SDL_Rect Message_rect; //create a rect
+
+            Message_rect.x = 250; //controls the rect's x coordinate
+            Message_rect.y = 250; // controls the rect's y coordinte
+            Message_rect.w = 200; // controls the width of the rect
+            Message_rect.h = 60; // controls the height of the rect
+            SDL_RenderCopy(gRenderer, Message, NULL, &Message_rect);
+        }
+    }
+    else if (b_c_m)
+    {
+        if (TTF_Init() == -1)
+        {
+            printf("TTF_Init: %s\n", TTF_GetError());
+            exit(2);
+        }
+        else
+        {
+            TTF_Font* Sans = TTF_OpenFont("/Users/aliabdulkareem/dev/chess/res/White_Mate.ttf", 24); //this opens a font style and sets a size
+
+            SDL_Color White = { 255, 255, 0, 255 }; // this is the color in rgb format, maxing out all would give you the color white, and it will be your text's color
+
+            SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, "Black is Check Mated", White); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
+
+            SDL_Texture* Message = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage); //now you can convert it into a texture
+            SDL_Rect Message_rect; //create a rect
+
+            Message_rect.x = 250; //controls the rect's x coordinate
+            Message_rect.y = 325; // controls the rect's y coordinte
+            Message_rect.w = 200; // controls the width of the rect
+            Message_rect.h = 60; // controls the height of the rect
+            SDL_RenderCopy(gRenderer, Message, NULL, &Message_rect);
+        }
+    }
+
     SDL_RenderPresent(gRenderer);
 }
 

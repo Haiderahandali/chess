@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/Users/aliabdulkareem/dev/chess/cmake-build-debug",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++   -I/usr/local/include -I/Users/aliabdulkareem/dev/chess/include  -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk   -Wall -Wextra -pedantic -Werror -m64 -std=c++17 -std=gnu++17 -o CMakeFiles/Game.dir/src/main.cpp.o -c /Users/aliabdulkareem/dev/chess/src/main.cpp",
+  "file": "/Users/aliabdulkareem/dev/chess/src/main.cpp"
+}
+]

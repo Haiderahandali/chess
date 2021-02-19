@@ -26,7 +26,7 @@ find_library(SDL2main SDL2main REQUIRED)
 find_library(SDL2_image SDL2_image REQUIRED)
 find_library(SDL2_ttf SDL2_ttf REQUIRED)
 
-target_link_libraries(DEPS INTERFACE ${SDL2_image} INTERFACE ${SDL2main} INTERFACE ${SDL2})
+target_link_libraries(DEPS INTERFACE ${SDL2_image} INTERFACE ${SDL2main} INTERFACE ${SDL2} INTERFACE ${SDL2_ttf})
 
 #Making it output to bin/Deubg or bin/Release Depending on which config we are using
 set_target_properties(Game PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_SOURCE_DIR}/bin/debug RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/bin/release)

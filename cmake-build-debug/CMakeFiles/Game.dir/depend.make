@@ -47,6 +47,7 @@ CMakeFiles/Game.dir/src/main.cpp.o: /usr/local/include/SDL2/SDL_system.h
 CMakeFiles/Game.dir/src/main.cpp.o: /usr/local/include/SDL2/SDL_thread.h
 CMakeFiles/Game.dir/src/main.cpp.o: /usr/local/include/SDL2/SDL_timer.h
 CMakeFiles/Game.dir/src/main.cpp.o: /usr/local/include/SDL2/SDL_touch.h
+CMakeFiles/Game.dir/src/main.cpp.o: /usr/local/include/SDL2/SDL_ttf.h
 CMakeFiles/Game.dir/src/main.cpp.o: /usr/local/include/SDL2/SDL_version.h
 CMakeFiles/Game.dir/src/main.cpp.o: /usr/local/include/SDL2/SDL_video.h
 CMakeFiles/Game.dir/src/main.cpp.o: /usr/local/include/SDL2/begin_code.h
