@@ -111,6 +111,8 @@ bool onKeyUp(int);
 bool WhiteOnCheck(std::vector<std::unique_ptr<Piece>>&);
 bool BlackOnCheck(std::vector<std::unique_ptr<Piece>>&);
 
+bool WhiteCheckMate(std::vector<std::unique_ptr<Piece>>&);
+
 bool init();
 bool isLegalPosition(Piece p, Vector2d const& pos);
 bool islegalMove(std::unique_ptr<Piece>& src, Vector2d dest, std::vector<std::unique_ptr<Piece>>& v);
@@ -139,6 +141,9 @@ int main(int argc, char** argv)
     // bool selected  = false;
     int destSquare = 0;
     int srcSquare  = 63;
+
+    bool start = true;
+    bool end   = false;
 
     //    auto selectedPiece = EMPTY;
 
@@ -170,15 +175,21 @@ int main(int argc, char** argv)
     {
         drawBoard();
 
-        if (onKeyDown(SDL_SCANCODE_UP))
+        if (start)
         {
             LoadStartPosition(ChessPieces);
-            WhiteTurn  = false;
+            WhiteTurn  = true;
             srcSquare  = 56;
             destSquare = 56;
+            start      = false;
         }
+
+        if (WhiteCheckMate(ChessPieces))
+            printf("\n WHITE is Check Mated\n");
+
         if (onKeyDown(SPACE))
         {
+
             DrawPieces(ChessPieces);
             if (ChessPieces[destSquare] != nullptr)
             {
@@ -788,8 +799,8 @@ bool islegalMove(std::unique_ptr<Piece>& src, Vector2d dest, std::vector<std::un
     case KING: {
         int x = dest.x - src->position.x;
         int y = dest.y - src->position.y;
-            y /= SQUARE_WIDTH;
-            x /= SQUARE_WIDTH;
+        y /= SQUARE_WIDTH;
+        x /= SQUARE_WIDTH;
         if (abs(x) <= 1 && abs(y) <= 1)
             legal = true;
         break;
@@ -850,6 +861,72 @@ bool BlackOnCheck(std::vector<std::unique_ptr<Piece>>& v)
     }
 
     return onCheck;
+}
+
+bool WhiteCheckMate(std::vector<std::unique_ptr<Piece>>& v)
+{
+    bool dead = true;
+    for (int i = 0; i < 64; ++i)
+    {
+        if (v[i] != nullptr && v[i]->color == WHITE)
+        {
+            for (int j = 0; j < 64; ++j)
+            {
+                if (isLegalPosition(*v[i], getPositionFromSquare(j))
+                    && islegalMove(v[i], getPositionFromSquare(j), v))
+                {
+
+                    if (v[j] == nullptr)
+                    {
+                        Piece temp_src  = *v[i];
+                        int temp_square = i;
+                        v[i]->position  = getPositionFromSquare(j);
+
+                        v[i]->currentSqaure = selectedSquare(getMousePosition());
+                        v[j]                = std::move(v[i]);
+                        v[i]                = nullptr;
+                        i                   = j;
+                        v[i]->selected      = false;
+
+                        if (!WhiteOnCheck(v))
+                            dead = false;
+
+                        //------------returning everything to its place----------//
+                        v[temp_square]  = std::make_unique<Piece>();
+                        *v[temp_square] = temp_src;
+                        v[j]            = nullptr;
+                        i               = temp_square;
+                    }
+                    //////==============================------------------
+                    else if (v[j]->color == WHITE)
+                        continue;
+                    //////==============================------------------
+                    else
+                    {
+                        auto temp_src   = *v[i];
+                        auto temp_dest  = *v[j];
+                        int temp_square = i;
+
+                        v[i]->position = getPositionFromSquare(j);
+
+                        v[i]->currentSqaure = selectedSquare(getMousePosition());
+                        v[j]                = std::move(v[i]);
+                        v[i]                = nullptr;
+                        i                   = j;
+                        v[i]->selected      = false;
+
+                        if (!WhiteOnCheck(v))
+                            dead = false;
+
+                        v[temp_square] = std::make_unique<Piece>(temp_src);
+                        v[j]           = std::make_unique<Piece>(temp_dest);
+                        i              = temp_square;
+                    }
+                }
+            }
+        }
+    }
+    return dead;
 }
 
 /*
