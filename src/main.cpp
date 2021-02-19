@@ -65,6 +65,7 @@ struct Piece
 
     {
     }
+    Piece() { }
     COLOR color; //white or black
     PIECE_TYPE type; // king, knight, queen, etc.
     char const* name;
@@ -197,8 +198,10 @@ int main(int argc, char** argv)
                         && isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare))
                         && islegalMove(ChessPieces[srcSquare], getPositionFromSquare(destSquare), ChessPieces))
                     {
+                        auto temp_src   = *ChessPieces[srcSquare];
+                        auto temp_dest  = *ChessPieces[destSquare];
+                        int temp_square = srcSquare;
 
-                        WhiteTurn                        = !WhiteTurn;
                         ChessPieces[srcSquare]->position = getPositionFromSquare(destSquare);
 
                         ChessPieces[srcSquare]->currentSqaure = selectedSquare(getMousePosition());
@@ -207,9 +210,23 @@ int main(int argc, char** argv)
                         srcSquare                             = destSquare;
                         ChessPieces[srcSquare]->selected      = false;
 
-                        if (WhiteOnCheck(ChessPieces) || BlackOnCheck(ChessPieces))
+                        if (WhiteOnCheck(ChessPieces) && WhiteTurn)
                         {
-                            printf("The King is in danger! invalid move\n");
+                            printf("The White King is in danger! invalid move\n");
+                            //------------returning everything to its place----------//
+                            ChessPieces[temp_square] = std::make_unique<Piece>(temp_src);
+                            ChessPieces[destSquare]  = std::make_unique<Piece>(temp_dest);
+                        }
+                        else if (BlackOnCheck(ChessPieces) && !WhiteTurn)
+                        {
+                            printf("The Black King is in danger! invalid move\n");
+                            //------------returning everything to its place----------//
+                            ChessPieces[temp_square] = std::make_unique<Piece>(temp_src);
+                            ChessPieces[destSquare]  = std::make_unique<Piece>(temp_dest);
+                        }
+                        else
+                        {
+                            WhiteTurn = !WhiteTurn;
                         }
                     }
                 }
@@ -222,7 +239,8 @@ int main(int argc, char** argv)
                     && islegalMove(ChessPieces[srcSquare], getPositionFromSquare(destSquare), ChessPieces))
                 {
 
-                    WhiteTurn                        = !WhiteTurn;
+                    Piece temp_src                   = *ChessPieces[srcSquare];
+                    int temp_square                  = srcSquare;
                     ChessPieces[srcSquare]->position = getPositionFromSquare(destSquare);
 
                     ChessPieces[srcSquare]->currentSqaure = selectedSquare(getMousePosition());
@@ -230,9 +248,28 @@ int main(int argc, char** argv)
                     ChessPieces[srcSquare]                = nullptr;
                     srcSquare                             = destSquare;
                     ChessPieces[srcSquare]->selected      = false;
-                    if (WhiteOnCheck(ChessPieces) || BlackOnCheck(ChessPieces))
+
+                    if (WhiteOnCheck(ChessPieces) && WhiteTurn)
                     {
-                        printf("The King is in danger! invalid move\n");
+                        printf("The White King is in danger! invalid move\n");
+                        //------------returning everything to its place----------//
+                        ChessPieces[temp_square]  = std::make_unique<Piece>();
+                        *ChessPieces[temp_square] = temp_src;
+                        ChessPieces[destSquare]   = nullptr;
+                        srcSquare                 = temp_square;
+                    }
+                    else if (BlackOnCheck(ChessPieces) && !WhiteTurn)
+                    {
+                        printf("The Black King is in danger! invalid move\n");
+                        //------------returning everything to its place----------//
+                        ChessPieces[temp_square]  = std::make_unique<Piece>();
+                        *ChessPieces[temp_square] = temp_src;
+                        ChessPieces[destSquare]   = nullptr;
+                        srcSquare                 = temp_square;
+                    }
+                    else
+                    {
+                        WhiteTurn = !WhiteTurn;
                     }
                 }
             }
@@ -748,6 +785,13 @@ bool islegalMove(std::unique_ptr<Piece>& src, Vector2d dest, std::vector<std::un
     }
 
     break;
+    case KING: {
+        int x = dest.x - src->position.x;
+        int y = dest.y - src->position.y;
+
+        if (abs(x) <= 1 && abs(y) <= 1)
+            legal = true;
+    }
     default: {
         legal = false;
         break;
