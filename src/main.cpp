@@ -541,7 +541,7 @@ bool isLegalPosition(Piece p, Vector2d const& pos)
             legal = true;
         break;
     case PAWN:
-        if (y == 1 && x == 0)
+        if ((y == 1 && x == 0) || (x == 1 && y == 1) || (x == 0 && y == 2))
             legal = true;
         break;
 
@@ -674,9 +674,71 @@ bool islegalMove(std::unique_ptr<Piece>& src, Vector2d dest, std::vector<std::un
         break;
     }
 
-    default:
-        legal = true;
+    case PAWN: {
+        int x = dest.x - src->position.x;
+        int y = dest.y - src->position.y;
+        x     = x / SQUARE_WIDTH;
+        y     = y / SQUARE_WIDTH;
+
+        if (src->color == WHITE)
+        {
+            if (x != 0 && y == 1)
+            {
+                dest = dest + SCREEN_OFFSET;
+                if (v[selectedSquare(dest)] != nullptr)
+                    legal = true;
+            }
+            else if (x == 0 && y == 1)
+            {
+                auto square = src->currentSqaure + 8;
+
+                if (v[square] == nullptr)
+                    legal = true;
+            }
+            else if (x == 0 && y == 2)
+            {
+                auto square       = src->currentSqaure + 8;
+                auto front_square = square + 8;
+                if (v[square] == nullptr && src->position.y == SQUARE_WIDTH && v[front_square] == nullptr)
+                    legal = true;
+            }
+            else
+                legal = false;
+            break;
+        }
+
+        else
+        {
+            if (x != 0 && y == -1)
+            {
+                dest = dest + SCREEN_OFFSET;
+                if (v[selectedSquare(dest)] != nullptr)
+                    legal = true;
+            }
+            else if (x == 0 && y == -1)
+            {
+                dest = dest + SCREEN_OFFSET;
+
+                if (v[selectedSquare(dest)] == nullptr)
+                    legal = true;
+            }
+            else if (x == 0 && y == -2)
+            {
+                auto square       = src->currentSqaure - 8;
+                auto front_square = square - 8;
+                if (v[square] == nullptr && src->position.y == (525-SQUARE_WIDTH) && v[front_square] == nullptr)
+                    legal = true;
+            }
+            else
+                legal = false;
+        }
+    }
+
+    break;
+    default: {
+        legal = false;
         break;
+    }
     }
     return legal;
 }
