@@ -112,6 +112,7 @@ bool WhiteOnCheck(std::vector<std::unique_ptr<Piece>>&);
 bool BlackOnCheck(std::vector<std::unique_ptr<Piece>>&);
 
 bool WhiteCheckMate(std::vector<std::unique_ptr<Piece>>&);
+bool BlackCheckMate(std::vector<std::unique_ptr<Piece>>&);
 
 bool init();
 bool isLegalPosition(Piece p, Vector2d const& pos);
@@ -174,7 +175,7 @@ int main(int argc, char** argv)
     while (!quit)
     {
         drawBoard();
-
+        DrawPieces(ChessPieces);
         if (start)
         {
             LoadStartPosition(ChessPieces);
@@ -184,35 +185,84 @@ int main(int argc, char** argv)
             start      = false;
         }
 
-        if (WhiteCheckMate(ChessPieces))
-            printf("\n WHITE is Check Mated\n");
-
-        if (onKeyDown(SPACE))
+        if (!end)
         {
-
-            DrawPieces(ChessPieces);
-            if (ChessPieces[destSquare] != nullptr)
+            if (WhiteCheckMate(ChessPieces))
             {
-                //clicked the same color piece // ------------- Selection -------------
-                if (ChessPieces[destSquare]->color == WhiteTurn)
+                printf("White is Check mated \n");
+                end = true;
+            }
+            else if (BlackCheckMate(ChessPieces))
+            {
+
+                printf("Black is Check mated \n");
+                end = true;
+            }
+
+            if (onKeyDown(SPACE))
+            {
+
+                if (ChessPieces[destSquare] != nullptr)
                 {
-                    ChessPieces[srcSquare]->selected  = false;
-                    ChessPieces[destSquare]->selected = true;
+                    //clicked the same color piece // ------------- Selection -------------
+                    if (ChessPieces[destSquare]->color == WhiteTurn)
+                    {
+                        ChessPieces[srcSquare]->selected  = false;
+                        ChessPieces[destSquare]->selected = true;
 
-                    srcSquare = destSquare;
+                        srcSquare = destSquare;
+                    }
+                    else if (ChessPieces[destSquare]->color != WhiteTurn) //clicked an enemy piece
+
+                    {
+                        if (ChessPieces[srcSquare]->selected
+                            && ChessPieces[srcSquare]->color == WhiteTurn
+                            && isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare))
+                            && islegalMove(ChessPieces[srcSquare], getPositionFromSquare(destSquare), ChessPieces))
+                        {
+                            auto temp_src   = *ChessPieces[srcSquare];
+                            auto temp_dest  = *ChessPieces[destSquare];
+                            int temp_square = srcSquare;
+
+                            ChessPieces[srcSquare]->position = getPositionFromSquare(destSquare);
+
+                            ChessPieces[srcSquare]->currentSqaure = selectedSquare(getMousePosition());
+                            ChessPieces[destSquare]               = std::move(ChessPieces[srcSquare]);
+                            ChessPieces[srcSquare]                = nullptr;
+                            srcSquare                             = destSquare;
+                            ChessPieces[srcSquare]->selected      = false;
+
+                            if (WhiteOnCheck(ChessPieces) && WhiteTurn)
+                            {
+                                printf("The White King is in danger! invalid move\n");
+                                //------------returning everything to its place----------//
+                                ChessPieces[temp_square] = std::make_unique<Piece>(temp_src);
+                                ChessPieces[destSquare]  = std::make_unique<Piece>(temp_dest);
+                            }
+                            else if (BlackOnCheck(ChessPieces) && !WhiteTurn)
+                            {
+                                printf("The Black King is in danger! invalid move\n");
+                                //------------returning everything to its place----------//
+                                ChessPieces[temp_square] = std::make_unique<Piece>(temp_src);
+                                ChessPieces[destSquare]  = std::make_unique<Piece>(temp_dest);
+                            }
+                            else
+                            {
+                                WhiteTurn = !WhiteTurn;
+                            }
+                        }
+                    }
                 }
-                else if (ChessPieces[destSquare]->color != WhiteTurn) //clicked an enemy piece
-
+                else if (ChessPieces[destSquare] == nullptr) //clicked an empty square
                 {
                     if (ChessPieces[srcSquare]->selected
                         && ChessPieces[srcSquare]->color == WhiteTurn
                         && isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare))
                         && islegalMove(ChessPieces[srcSquare], getPositionFromSquare(destSquare), ChessPieces))
                     {
-                        auto temp_src   = *ChessPieces[srcSquare];
-                        auto temp_dest  = *ChessPieces[destSquare];
-                        int temp_square = srcSquare;
 
+                        Piece temp_src                   = *ChessPieces[srcSquare];
+                        int temp_square                  = srcSquare;
                         ChessPieces[srcSquare]->position = getPositionFromSquare(destSquare);
 
                         ChessPieces[srcSquare]->currentSqaure = selectedSquare(getMousePosition());
@@ -225,15 +275,19 @@ int main(int argc, char** argv)
                         {
                             printf("The White King is in danger! invalid move\n");
                             //------------returning everything to its place----------//
-                            ChessPieces[temp_square] = std::make_unique<Piece>(temp_src);
-                            ChessPieces[destSquare]  = std::make_unique<Piece>(temp_dest);
+                            ChessPieces[temp_square]  = std::make_unique<Piece>();
+                            *ChessPieces[temp_square] = temp_src;
+                            ChessPieces[destSquare]   = nullptr;
+                            srcSquare                 = temp_square;
                         }
                         else if (BlackOnCheck(ChessPieces) && !WhiteTurn)
                         {
                             printf("The Black King is in danger! invalid move\n");
                             //------------returning everything to its place----------//
-                            ChessPieces[temp_square] = std::make_unique<Piece>(temp_src);
-                            ChessPieces[destSquare]  = std::make_unique<Piece>(temp_dest);
+                            ChessPieces[temp_square]  = std::make_unique<Piece>();
+                            *ChessPieces[temp_square] = temp_src;
+                            ChessPieces[destSquare]   = nullptr;
+                            srcSquare                 = temp_square;
                         }
                         else
                         {
@@ -242,59 +296,10 @@ int main(int argc, char** argv)
                     }
                 }
             }
-            else if (ChessPieces[destSquare] == nullptr) //clicked an empty square
+            else
             {
-                if (ChessPieces[srcSquare]->selected
-                    && ChessPieces[srcSquare]->color == WhiteTurn
-                    && isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare))
-                    && islegalMove(ChessPieces[srcSquare], getPositionFromSquare(destSquare), ChessPieces))
-                {
-
-                    Piece temp_src                   = *ChessPieces[srcSquare];
-                    int temp_square                  = srcSquare;
-                    ChessPieces[srcSquare]->position = getPositionFromSquare(destSquare);
-
-                    ChessPieces[srcSquare]->currentSqaure = selectedSquare(getMousePosition());
-                    ChessPieces[destSquare]               = std::move(ChessPieces[srcSquare]);
-                    ChessPieces[srcSquare]                = nullptr;
-                    srcSquare                             = destSquare;
-                    ChessPieces[srcSquare]->selected      = false;
-
-                    if (WhiteOnCheck(ChessPieces) && WhiteTurn)
-                    {
-                        printf("The White King is in danger! invalid move\n");
-                        //------------returning everything to its place----------//
-                        ChessPieces[temp_square]  = std::make_unique<Piece>();
-                        *ChessPieces[temp_square] = temp_src;
-                        ChessPieces[destSquare]   = nullptr;
-                        srcSquare                 = temp_square;
-                    }
-                    else if (BlackOnCheck(ChessPieces) && !WhiteTurn)
-                    {
-                        printf("The Black King is in danger! invalid move\n");
-                        //------------returning everything to its place----------//
-                        ChessPieces[temp_square]  = std::make_unique<Piece>();
-                        *ChessPieces[temp_square] = temp_src;
-                        ChessPieces[destSquare]   = nullptr;
-                        srcSquare                 = temp_square;
-                    }
-                    else
-                    {
-                        WhiteTurn = !WhiteTurn;
-                    }
-                }
-            }
-        }
-        else
-        {
-            destSquare = selectedSquare(getMousePosition());
-            DrawPieces(ChessPieces);
-            for (auto& x : ChessPieces)
-            {
-                if (x != nullptr)
-                {
-                    // printf(" piece at %d %d , Selected =%d , src =%d , dest =%d & currentSqaure =%d \n", x->position.x, x->position.y, x->selected, srcSquare, destSquare, x->currentSqaure);
-                }
+                destSquare = selectedSquare(getMousePosition());
+                DrawPieces(ChessPieces);
             }
         }
         render();
@@ -929,25 +934,75 @@ bool WhiteCheckMate(std::vector<std::unique_ptr<Piece>>& v)
     return dead;
 }
 
-/*
+bool BlackCheckMate(std::vector<std::unique_ptr<Piece>>& v)
+{
 
-
-
-
-
-  if (ChessPieces[srcSquare]->selected && ChessPieces[srcSquare]->color == WhiteTurn && isLegalPosition(*ChessPieces[srcSquare], getPositionFromSquare(destSquare)))
+    bool dead = true;
+    for (int i = 0; i < 64; ++i)
+    {
+        if (v[i] != nullptr && v[i]->color == BLACK)
+        {
+            for (int j = 0; j < 64; ++j)
+            {
+                if (isLegalPosition(*v[i], getPositionFromSquare(j))
+                    && islegalMove(v[i], getPositionFromSquare(j), v))
                 {
 
-                    WhiteTurn                        = !WhiteTurn;
-                    ChessPieces[srcSquare]->position = getPositionFromSquare(destSquare);
+                    if (v[j] == nullptr)
+                    {
+                        Piece temp_src  = *v[i];
+                        int temp_square = i;
+                        v[i]->position  = getPositionFromSquare(j);
 
-                    ChessPieces[srcSquare]->currentSqaure = selectedSquare(getMousePosition());
-                    ChessPieces[destSquare]               = std::move(ChessPieces[srcSquare]);
-                    ChessPieces[srcSquare]                = nullptr;
-                    srcSquare                             = destSquare;
-                    ChessPieces[srcSquare]->selected      = false;
+                        v[i]->currentSqaure = selectedSquare(getMousePosition());
+                        v[j]                = std::move(v[i]);
+                        v[i]                = nullptr;
+                        i                   = j;
+                        v[i]->selected      = false;
+
+                        if (!BlackOnCheck(v))
+                            dead = false;
+
+                        //------------returning everything to its place----------//
+                        v[temp_square]  = std::make_unique<Piece>();
+                        *v[temp_square] = temp_src;
+                        v[j]            = nullptr;
+                        i               = temp_square;
+                    }
+                    //////==============================------------------
+                    else if (v[j]->color == BLACK)
+                        continue;
+                    //////==============================------------------
+                    else
+                    {
+                        auto temp_src   = *v[i];
+                        auto temp_dest  = *v[j];
+                        int temp_square = i;
+
+                        v[i]->position = getPositionFromSquare(j);
+
+                        v[i]->currentSqaure = selectedSquare(getMousePosition());
+                        v[j]                = std::move(v[i]);
+                        v[i]                = nullptr;
+                        i                   = j;
+                        v[i]->selected      = false;
+
+                        if (!BlackOnCheck(v))
+                            dead = false;
+
+                        v[temp_square] = std::make_unique<Piece>(temp_src);
+                        v[j]           = std::make_unique<Piece>(temp_dest);
+                        i              = temp_square;
+                    }
                 }
             }
+        }
+    }
+    return dead;
+}
+
+/*
+
 
 
 
