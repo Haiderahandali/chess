@@ -788,9 +788,11 @@ bool islegalMove(std::unique_ptr<Piece>& src, Vector2d dest, std::vector<std::un
     case KING: {
         int x = dest.x - src->position.x;
         int y = dest.y - src->position.y;
-
+            y /= SQUARE_WIDTH;
+            x /= SQUARE_WIDTH;
         if (abs(x) <= 1 && abs(y) <= 1)
             legal = true;
+        break;
     }
     default: {
         legal = false;
