@@ -11,3 +11,4 @@
 
 ### TODO
 implement En passant
+!["demo of me playing chess"]("res/demo.mp4")
