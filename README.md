@@ -11,4 +11,3 @@
 
 ### TODO
 implement En passant
-!["demo chess board game "]("Screenshot.png")
