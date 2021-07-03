@@ -11,4 +11,4 @@
 
 ### TODO
 implement En passant
-!["demo chess board game "]("res/Screenshot.png")
+!["demo chess board game "]("Screenshot.png")
